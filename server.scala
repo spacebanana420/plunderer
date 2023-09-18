@@ -7,9 +7,23 @@ import java.io.FileOutputStream
 import java.io.File
 import java.nio.ByteBuffer
 
-@main def main(arg: String) = {
-    if arg == "server" then server()
-    else client()
+import scala.sys.exit
+
+@main def main() = {
+    val mode = readUserInput("--Choose an option--\nexit\nserver\nclient")
+    val passExists = File("password.txt").isFile()
+    while true do {
+        mode match
+            case "server" =>
+                if passExists == true then
+                    server()
+                else
+                    println("You need to have a password.txt file in the root of the server\nCancelling server launch")
+            case "client" =>
+                client()
+            case "exit" => exit()
+            case _ => exit()
+    }
 }
 
 def server(port: Int = 42069) = {
@@ -36,9 +50,9 @@ def server(port: Int = 42069) = {
         val lengbytes = new Array[Byte](8)
         is.read(lengbytes)
         val len = bytesToLong(lengbytes)
-        val max: Long = 20000000000
+        val maxlen: Long = 20000000000
         println("File length: " + len + " bytes")
-        if len <= max then
+        if len <= maxlen then
             os.write(Array[Byte](1))
             serverWrite(sock, len)
         else
@@ -71,10 +85,11 @@ def serverWrite(sock: Socket, len: Long) = {
 }
 
 def client(host: String = "localhost", port: Int = 42069) = {
+    println(s"Connecting to host \"$host\" at port $port")
     val sock = new Socket(host, port)
     val os = sock.getOutputStream()
     val is = sock.getInputStream()
-    println(s"Connecting to host \"$host\" at port $port")
+    println("Connection established")
 
     val password = stringToBytes(readUserInput("Input connection password:"))
     os.write(password)
