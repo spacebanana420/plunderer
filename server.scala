@@ -1,4 +1,4 @@
-package network
+package plunderer
 
 import java.net.ServerSocket
 import java.net.Socket
@@ -94,7 +94,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
         else
             println("Connection refused\nFile exceeds 20GB")
     else
-        println("Refused connection!")
+        println("Incorrect password!")
 }
 
 def clientWrite(sock: Socket, len: Long) = {
@@ -112,29 +112,11 @@ def clientWrite(sock: Socket, len: Long) = {
     filein.close()
 }
 
-// def printfuckingarrays(a1: Array[Byte], a2: Array[Byte]) = {
-//     println("Array 1")
-//     for i <- a1 do {
-//         print(i + " ")
-//     }
-//     println("Array2")
-//     for i <- a2 do {
-//         print(i + " ")
-//     }
-// }
 def readUserInput(message: String = ""): String = {
     if message != "" then
         println(message)
     scala.io.StdIn.readLine()
 }
-
-// def readTextFile(pathstr: String): List[String] = {
-//     if File(pathstr).isFile == true then
-//         val path = Paths.get(pathstr)
-//         Files.readAllLines(path)
-//     else
-//         List[String]()
-// }
 
 def readTextFile(path: String): Array[Byte] = {
     val file = new FileInputStream(path)
