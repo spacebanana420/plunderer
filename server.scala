@@ -36,14 +36,14 @@ def server(port: Int = 42069) = {
         val lengbytes = new Array[Byte](8)
         is.read(lengbytes)
         val len = bytesToLong(lengbytes)
+        val max: Long = 20000000000
         println("File length: " + len + " bytes")
-        if len <= 20000000000 then
+        if len <= max then
             os.write(Array[Byte](1))
             serverWrite(sock, len)
         else
             println("Requested file transfer exceeds 20GB\nClosing connection")
             os.write(Array[Byte](1))
-            ss.close()
     else
         println("Incorrect password sent, closing server")
         os.write(Array[Byte](0))
