@@ -4,7 +4,7 @@ import java.nio.ByteBuffer
 import java.io.FileInputStream
 
 
-def readTextFile(path: String): Array[Byte] = {
+def readPassFile(path: String): Array[Byte] = {
     val file = new FileInputStream(path)
     val bytes = new Array[Byte](file.available())
     var bytes_filtered = Array[Byte]()

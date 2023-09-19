@@ -6,13 +6,14 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.File
 
+
 def server(port: Int = 42069) = {
     println("Opened server with port " + port)
     val ss = new ServerSocket(port)
     val sock = ss.accept()
     val is = sock.getInputStream()
     val os = sock.getOutputStream()
-    val password = readTextFile("password.txt")
+    val password = readPassFile("password.txt")
 
     println("Waiting for connection requests")
     while is.available() == 0 do {
