@@ -33,6 +33,15 @@ def bytesToString(txt: Array[Byte]): String = {
     str
 }
 
+def intToBytes(num: Int): Array[Byte] = {
+    Array[Byte](
+    (num>>24).toByte,
+    (num>>16).toByte,
+    (num>>8).toByte,
+    num.toByte
+    )
+}
+
 def longToBytes(num: Long): Array[Byte] = {
     Array[Byte](
     (num>>56).toByte,
@@ -47,6 +56,8 @@ def longToBytes(num: Long): Array[Byte] = {
 }
 
 def bytesToLong(bytes: Array[Byte]): Long = ByteBuffer.wrap(bytes).getLong()
+
+def bytesToInt(bytes: Array[Byte]): Int = ByteBuffer.wrap(bytes).getInt()
 
 // def getHeader(instruction: String): Array[Byte] = {
 //     instruction match

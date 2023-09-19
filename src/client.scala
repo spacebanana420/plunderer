@@ -25,12 +25,18 @@ def client(host: String = "localhost", port: Int = 42069) = {
         println("File length: " + len)
         val lenbytes = longToBytes(len)
         os.write(lenbytes)
+
+        val namelen = "input.png".length
+        val namelen_bytes = intToBytes(namelen)
+        val name = stringToBytes("input.png")
+        os.write(namelen_bytes)
+        os.write(name)
         is.read(status)
         if status(0) == 1 then
             println("Uploading file")
             clientWrite(sock, len)
         else
-            println("Connection refused\nFile exceeds 20GB")
+            println("Connection refused\nFile exceeds 20GB or filename's length is 0")
     else
         println("Incorrect password!")
 }

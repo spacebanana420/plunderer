@@ -32,24 +32,32 @@ def server(port: Int = 42069) = {
         is.read(lengbytes)
         val len = bytesToLong(lengbytes)
         val maxlen: Long = 20000000000
-        println("File length: " + len + " bytes")
-        if len <= maxlen then
+
+        val namelen_bytes = new Array[Byte](4)
+        is.read(namelen_bytes)
+        val namelen = bytesToInt(namelen_bytes)
+        val name_bytes = new Array[Byte](namelen)
+        is.read(name_bytes)
+        val name = bytesToString(name_bytes)
+        println(s"--Downloading File--\nName: $name\nLength: $len bytes")
+
+        if len <= maxlen && namelen > 0 then
             os.write(Array[Byte](1))
-            serverWrite(sock, len)
+            serverWrite(sock, name, len)
         else
-            println("Requested file transfer exceeds 20GB\nClosing connection")
-            os.write(Array[Byte](1))
+            println("Requested file transfer exceeds 20GB or name length is 0\nClosing connection")
+            os.write(Array[Byte](0))
     else
         println("Incorrect password sent, closing server")
         os.write(Array[Byte](0))
     ss.close()
 }
 
-def serverWrite(sock: Socket, len: Long) = {
+def serverWrite(sock: Socket, name: String, len: Long) = {
     val is = sock.getInputStream()
     val os = sock.getOutputStream()
 
-    val fileout = new FileOutputStream("output.png")
+    val fileout = new FileOutputStream(s"NEW_$name")
     var buf = 0
     val data = new Array[Byte](256)
     while buf <= len-256 do {
