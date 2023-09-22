@@ -86,10 +86,11 @@ def fileBrowser(basedir: String): Array[Array[String]] = {
 // }
 
 def getParentPath(path: String): String = {
-    try
-        File(path).getParent()
-    catch
-        case e: Exception => path
+    val parent = File(path).getParent()
+    if parent != null then
+        parent
+    else
+        path
 }
 
 def getRelativePath(fullpath: String): String = {

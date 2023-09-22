@@ -53,4 +53,5 @@ def clientWrite(sock: Socket, filepath: String, len: Long) = {
         filein.read(finaldata)
         os.write(finaldata)
     filein.close()
+    readUserInput("File upload successful!\n\nPress any key")
 }
