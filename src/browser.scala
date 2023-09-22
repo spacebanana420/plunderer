@@ -30,8 +30,8 @@ def browseLoop(basedir: String): String = {
                     getParentPath(basedir)
                 else if answernum - 2 <= paths(0).length-1 then
                     s"${basedir}/${paths(0)(answernum - 2)}"
-                else if answernum - 2 - paths(0).length -1 <= paths(1).length-1 then
-                    s"${basedir}/${paths(1)(answernum - 2 - paths(0).length-1)}"
+                else if answernum - 2 - paths(0).length <= paths(1).length-1 then
+                    s"${basedir}/${paths(1)(answernum - 2 - paths(0).length)}"
                 else
                     basedir
             chosenpath

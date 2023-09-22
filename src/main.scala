@@ -16,7 +16,10 @@ import scala.sys.process.*
                     println("You need to have a password.txt file in the root of the server\nCancelling server launch")
             case "client" =>
                 val file = getFile()
-                client(port = getPort(), file(0), file(1))
+                try
+                    client(port = getPort(), file(0), file(1))
+                catch
+                    case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress any key")
             case "exit" => exit()
             case _ => exit()
     }
