@@ -7,9 +7,7 @@ import java.io.FileOutputStream
 import java.io.File
 
 
-def client(host: String = "localhost", port: Int = 42069) = {
-    val name = "frog.png"
-
+def client(host: String = "localhost", port: Int = 42069, filename: String, filepath: String) = {
     println(s"Connecting to host \"$host\" at port $port")
     val sock = new Socket(host, port)
     val os = sock.getOutputStream()
@@ -23,28 +21,28 @@ def client(host: String = "localhost", port: Int = 42069) = {
 
     if status(0) == 1 then
         println("Connection accepted, transferring file")
-        val len = File(name).length()
+        val len = File(filepath).length()
         val lenbytes = longToBytes(len)
         os.write(lenbytes)
 
-        val namelen = name.length
+        val namelen = filename.length
         val namelen_bytes = intToBytes(namelen)
-        val name_bytes = stringToBytes(name)
+        val name_bytes = stringToBytes(filename)
         os.write(namelen_bytes)
         os.write(name_bytes)
         is.read(status)
         if status(0) == 1 then
             println("Uploading file")
-            clientWrite(sock, name, len)
+            clientWrite(sock, filepath, len)
         else
             println("Connection refused\nFile exceeds 20GB or filename's length is 0")
     else
         println("Incorrect password!")
 }
 
-def clientWrite(sock: Socket, name: String, len: Long) = {
+def clientWrite(sock: Socket, filepath: String, len: Long) = {
     val os = sock.getOutputStream()
-    val filein = new FileInputStream(name)
+    val filein = new FileInputStream(filepath)
     val data = new Array[Byte](256)
     while filein.available() >= 256 do {
         filein.read(data)

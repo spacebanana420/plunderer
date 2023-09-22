@@ -2,6 +2,7 @@ package plunderer
 
 import java.io.File
 import scala.sys.exit
+import scala.sys.process.*
 
 @main def main() = {
     val mode = readUserInput("--Choose an option--\nexit\nserver\nclient\n")
@@ -14,7 +15,8 @@ import scala.sys.exit
                 else
                     println("You need to have a password.txt file in the root of the server\nCancelling server launch")
             case "client" =>
-                client(port = getPort())
+                val file = getFile()
+                client(port = getPort(), file(0), file(1))
             case "exit" => exit()
             case _ => exit()
     }
@@ -28,9 +30,18 @@ def getPort(): Int = {
         case e: Exception => 42069
 }
 
+def getFile(): Array[String] = {
+    val filepath = browse()
+    val relative = getRelativePath(filepath)
+    Array[String](relative, filepath)
+}
 
 def readUserInput(message: String = ""): String = {
     if message != "" then
         println(message)
     scala.io.StdIn.readLine()
+}
+
+def clear() = { //add windows support
+    List[String]("clear").!
 }
