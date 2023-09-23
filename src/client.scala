@@ -35,7 +35,7 @@ def client(host: String = "localhost", port: Int = 42069, filename: String, file
             println("Uploading file")
             clientWrite(sock, filepath, len)
         else
-            println("Connection refused\nFile exceeds 20GB or filename's length is 0")
+            println("Connection refused\nFile exceeds 20GB or filename is empty")
     else
         println("Incorrect password!")
 }

@@ -61,8 +61,8 @@ def bytesToInt(bytes: Array[Byte]): Int = ByteBuffer.wrap(bytes).getInt()
 
 // def getHeader(instruction: String): Array[Byte] = {
 //     instruction match
-//         case "go" => Array[Byte](1)
-//         case "lenght" => Array[Byte](2)
-//         case "final" => Array[Byte](3)
-//         case "stop" => Array[Byte](0)
+//         case "accepted" => Array[Byte](1)
+//         case "string" => Array[Byte](2)
+//         case "download" => Array[Byte](3)
+//         case "shutdown" => Array[Byte](0)
 // }

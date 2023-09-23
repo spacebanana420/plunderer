@@ -57,7 +57,7 @@ def serverWrite(sock: Socket, name: String, len: Long) = {
     val is = sock.getInputStream()
     val os = sock.getOutputStream()
 
-    val fileout = new FileOutputStream(s"NEW_$name")
+    val fileout = new FileOutputStream(getDownloadName(name))
     var buf = 0
     val data = new Array[Byte](256)
     while buf <= len-256 do {
@@ -71,4 +71,15 @@ def serverWrite(sock: Socket, name: String, len: Long) = {
         fileout.write(finalbyte)
     fileout.close()
     println("File successfully written!\nClosing server...")
+}
+
+def getDownloadName(name: String, i: Int = 1): String = {
+    val finalname =
+        if File(s"NEW_$name").exists() == false then
+            s"NEW_$name"
+        else if File(s"NEW${i}_$name").exists() == false then
+            s"NEW${i}_$name"
+        else
+            getDownloadName(name, i+1)
+    finalname
 }
