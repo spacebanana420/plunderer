@@ -12,7 +12,7 @@ def client(host: String = "localhost", port: Int = 42069, filename: String, file
     val sock = new Socket(host, port)
     val os = sock.getOutputStream()
     val is = sock.getInputStream()
-    println("Connection established")
+    println("Connection established to server")
 
     val password = stringToBytes(readUserInput("Input connection password:"))
     os.write(password)
@@ -20,7 +20,7 @@ def client(host: String = "localhost", port: Int = 42069, filename: String, file
     is.read(status)
 
     if status(0) == 1 then
-        println("Connection accepted, transferring file")
+        println("Connection accepted, uploading file")
         val len = File(filepath).length()
         val lenbytes = longToBytes(len)
         os.write(lenbytes)
@@ -35,7 +35,7 @@ def client(host: String = "localhost", port: Int = 42069, filename: String, file
             println("Uploading file")
             clientWrite(sock, filepath, len)
         else
-            println("Connection refused\nFile exceeds 20GB or filename is empty")
+            println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
     else
         println("Incorrect password!")
 }

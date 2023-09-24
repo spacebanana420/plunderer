@@ -10,16 +10,28 @@ import java.io.File
 def server(port: Int = 42069) = {
     println("Opened server with port " + port)
     val ss = new ServerSocket(port)
+    //var closeServer = false
+    while true do {
+        serverSession(ss)
+    }
+    ss.close()
+}
+
+def serverSession(ss: ServerSocket) = {
     val sock = ss.accept()
     val is = sock.getInputStream()
     val os = sock.getOutputStream()
+
+    val config = getConfigFile()
+    //val password = getPassword(config)
+    val maxperfile = getFileLimit(config, "perfile")
+    val maxtotal = getFileLimit(config, "total")
     val password = readPassFile("password.txt")
 
     println("Waiting for connection requests")
-    while is.available() == 0 do {
-        Thread.sleep(400)
-    }
-
+        while is.available() == 0 do {
+            Thread.sleep(350)
+        }
     println("New connection\nRequesting password")
     val inpass = new Array[Byte](is.available())
     is.read(inpass)
@@ -28,10 +40,9 @@ def server(port: Int = 42069) = {
         println("Correct password input, proceeding")
         os.write(Array[Byte](1))
 
-        val lengbytes = new Array[Byte](8)
-        is.read(lengbytes)
-        val len = bytesToLong(lengbytes)
-        val maxlen: Long = 20000000000
+        val lenbytes = new Array[Byte](8)
+        is.read(lenbytes)
+        val len = bytesToLong(lenbytes)
 
         val namelen_bytes = new Array[Byte](4)
         is.read(namelen_bytes)
@@ -41,16 +52,17 @@ def server(port: Int = 42069) = {
         val name = bytesToString(name_bytes)
         println(s"--Downloading File--\nName: $name\nLength: $len bytes")
 
-        if len <= maxlen && namelen > 0 then
+        if len / 1000000000 <= maxperfile && namelen > 0 then
             os.write(Array[Byte](1))
             serverWrite(sock, name, len)
+            println("File successfully written!\nClosing connection")
         else
-            println("Requested file transfer exceeds 20GB or name length is 0\nClosing connection")
+            println(s"Requested file transfer exceeds ${maxperfile}GB or file name length is 0\nClosing connection")
             os.write(Array[Byte](0))
     else
-        println("Incorrect password sent, closing server")
+        println("Incorrect password received, closing connection")
         os.write(Array[Byte](0))
-    ss.close()
+    sock.close()
 }
 
 def serverWrite(sock: Socket, name: String, len: Long) = {
@@ -70,7 +82,6 @@ def serverWrite(sock: Socket, name: String, len: Long) = {
         is.read(finalbyte)
         fileout.write(finalbyte)
     fileout.close()
-    println("File successfully written!\nClosing server...")
 }
 
 def getDownloadName(name: String, i: Int = 1): String = {
