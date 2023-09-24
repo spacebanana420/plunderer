@@ -5,23 +5,25 @@ import scala.sys.exit
 import scala.sys.process.*
 
 @main def main() = {
-    val mode = readUserInput("--Choose an option--\nexit\nserver\nclient\n")
+    val mode = readUserInput("--Choose an option--\n1: Exit   2: Server   3: Client\n")
     val passExists = File("password.txt").isFile()
+    //val configExists = File("config.txt").isFile()
     while true do {
         mode match
-            case "server" =>
+            case "2" =>
                 if passExists == true then
                     server(getPort())
                 else
                     println("You need to have a password.txt file in the root of the server\nCancelling server launch")
-            case "client" =>
+            case "3" =>
                 val file = getFile()
                 val ip = getIP()
+                val port = getPort()
                 try
-                    client(ip, getPort(), file(0), file(1))
+                    client(ip, port, file(0), file(1))
                 catch
                     case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress any key")
-            case "exit" => exit()
+            case "1" => exit()
             case _ => exit()
     }
 }
@@ -47,6 +49,8 @@ def getIP(): String = {
     else
         "localhost"
 }
+
+//def verifyIP(ip: String): String = {
 
 def readUserInput(message: String = ""): String = {
     if message != "" then
