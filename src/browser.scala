@@ -1,4 +1,4 @@
-package plunderer
+package yakumo
 
 import java.io.File
 import scala.sys.process.*
