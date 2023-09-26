@@ -1,1 +1,1 @@
-scalac src/*.scala -d server.jar
+scalac src/*.scala -d yakumo.jar

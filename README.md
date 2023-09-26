@@ -15,7 +15,7 @@ Grab the program from the release page once it comes out
 I am not distributing jars that include the whole runtime, that's why Scala is specifically necessary.
 
 ## How to use
-Launch the jar program with ```scala server.jar```. You will be prompted to choose if you want to open a server or connect to one using the built-in client.
+Launch the jar program with ```scala yakumo.jar```. You will be prompted to choose if you want to open a server or connect to one using the built-in client.
 
 ### Server
 The server requires a port, and defaults to 42069.
@@ -36,4 +36,4 @@ Type the password so the server accepts your connection. If the password is corr
 # Building from source
 You require Scala 3.0 or higher
 
-Open a terminal in the root of the project and type ```scalac src/*.scala -d server.jar``` or, if you have Bash on your system, just run build.sh: ```bash build.sh```
+Open a terminal in the root of the project and type ```scalac src/*.scala -d yakumo.jar``` or, if you have Bash on your system, just run build.sh: ```bash build.sh``` 
