@@ -57,9 +57,11 @@ def readUserInput(message: String = ""): String = {
     scala.io.StdIn.readLine()
 }
 
-def clear() = { //add windows support
-    List[String]("clear").!
-    //List[String]("cmd", "/c", "cls").!
+def clear() = { //test windows support
+    if File("C:").isDirectory == false then
+        List[String]("clear").!
+    else
+        List[String]("cmd", "/c", "cls").!
 }
 
 def createConfig() = {
