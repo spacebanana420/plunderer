@@ -4,18 +4,18 @@ import java.nio.ByteBuffer
 import java.io.FileInputStream
 
 
-def readPassFile(path: String): Array[Byte] = {
-    val file = new FileInputStream(path)
-    val bytes = new Array[Byte](file.available())
-    var bytes_filtered = Array[Byte]()
-    file.read(bytes)
-    file.close()
-    for i <- bytes do {
-        if i != 10 then
-            bytes_filtered = bytes_filtered :+ i
-    }
-    bytes_filtered
-}
+// def readPassFile(path: String): Array[Byte] = {
+//     val file = new FileInputStream(path)
+//     val bytes = new Array[Byte](file.available())
+//     var bytes_filtered = Array[Byte]()
+//     file.read(bytes)
+//     file.close()
+//     for i <- bytes do {
+//         if i != 10 then
+//             bytes_filtered = bytes_filtered :+ i
+//     }
+//     bytes_filtered
+// }
 
 def stringToBytes(txt: String): Array[Byte] = {
     var charBytes = new Array[Byte](txt.length)

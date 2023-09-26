@@ -1,21 +1,23 @@
 package plunderer
 
 import java.io.File
+import java.io.FileOutputStream
 import scala.sys.exit
 import scala.sys.process.*
 
 @main def main() = {
-    val mode = readUserInput("--Choose an option--\n1: Exit   2: Server   3: Client\n")
-    val passExists = File("password.txt").isFile()
-    //val configExists = File("config.txt").isFile()
+    if File("config.txt").isFile() == false then
+        createConfig()
+    val mode = readUserInput("--Choose an option--\n0: Exit   1: Server   2: Client\n")
     while true do {
         mode match
-            case "2" =>
-                if passExists == true then
+            case "0" => exit()
+            case "1" =>
+                if isConfigFine() == true then
                     server(getPort())
                 else
-                    println("You need to have a password.txt file in the root of the server\nCancelling server launch")
-            case "3" =>
+                    println("You need to have a properly configured config.txt file!\nCancelling server launch")
+            case "2" =>
                 val file = getFile()
                 val ip = getIP()
                 val port = getPort()
@@ -23,7 +25,6 @@ import scala.sys.process.*
                     client(ip, port, file(0), file(1))
                 catch
                     case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress any key")
-            case "1" => exit()
             case _ => exit()
     }
 }
@@ -50,8 +51,6 @@ def getIP(): String = {
         "localhost"
 }
 
-//def verifyIP(ip: String): String = {
-
 def readUserInput(message: String = ""): String = {
     if message != "" then
         println(message)
@@ -60,4 +59,26 @@ def readUserInput(message: String = ""): String = {
 
 def clear() = { //add windows support
     List[String]("clear").!
+    //List[String]("cmd", "/c", "cls").!
+}
+
+def createConfig() = {
+    val defaultConfig = stringToBytes("password=test123\nmaxperfile=20\nmaxtotal=30")
+    val file = new FileOutputStream("config.txt")
+    file.write(defaultConfig)
+    file.close()
+}
+
+def isConfigFine(): Boolean = {
+    val config = getConfigFile()
+    val password = getPassword(config)
+    val perfile = getFileLimit(config, "perfile")
+    val total = getFileLimit(config, "total")
+
+    val isConfigOk =
+        if password != "" && perfile != -1 && total != -1 then
+            true
+        else
+            false
+    isConfigOk
 }

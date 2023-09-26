@@ -8,7 +8,7 @@ import java.io.File
 
 
 def server(port: Int = 42069) = {
-    println("Opened server with port " + port)
+    println(s"Opened server with port $port\nWaiting for incoming requests...")
     val ss = new ServerSocket(port)
     //var closeServer = false
     while true do {
@@ -23,21 +23,20 @@ def serverSession(ss: ServerSocket) = {
     val os = sock.getOutputStream()
 
     val config = getConfigFile()
-    //val password = getPassword(config)
+    val password = getPassword(config)
     val maxperfile = getFileLimit(config, "perfile")
     val maxtotal = getFileLimit(config, "total")
-    val password = readPassFile("password.txt")
+    //val password = readPassFile("password.txt")
 
-    println("Waiting for connection requests")
+    println("New connection\nRequesting password")
         while is.available() == 0 do {
             Thread.sleep(350)
         }
-    println("New connection\nRequesting password")
     val inpass = new Array[Byte](is.available())
     is.read(inpass)
 
     if inpass.sameElements(password) == true then
-        println("Correct password input, proceeding")
+        println("Correct password input, proceeding\n\n")
         os.write(Array[Byte](1))
 
         val lenbytes = new Array[Byte](8)
@@ -50,7 +49,7 @@ def serverSession(ss: ServerSocket) = {
         val name_bytes = new Array[Byte](namelen)
         is.read(name_bytes)
         val name = bytesToString(name_bytes)
-        println(s"--Downloading File--\nName: $name\nLength: $len bytes")
+        println(s"--Downloading File--\nName: $name\nLength: $len bytes\n")
 
         if len / 1000000000 <= maxperfile && namelen > 0 then
             os.write(Array[Byte](1))
