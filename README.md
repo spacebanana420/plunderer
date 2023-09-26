@@ -1,4 +1,4 @@
-# Plunderer
+# Yakumo
 TCP server and Client for transferring files with its own unique protocol.
 
 The server opens and waits for a connection request. Once a client connects to the server, it has to send the correct password to proceed. The client will upload the file to the server, alongside information about the file's name and size. The connection is not encrypted.
