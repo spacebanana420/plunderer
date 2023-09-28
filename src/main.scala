@@ -5,7 +5,7 @@ import java.io.FileOutputStream
 import scala.sys.exit
 import scala.sys.process.*
 
-@main def main() = {
+@main def main() = { //add user authentication and unique folder per user
     if File("config.txt").isFile() == false then
         createConfig()
     val mode = readUserInput("--Choose an option--\n0: Exit   1: Server   2: Client\n")
@@ -18,11 +18,11 @@ import scala.sys.process.*
                 else
                     println("You need to have a properly configured config.txt file!\nCancelling server launch")
             case "2" =>
-                val file = getFile()
+                // val file = getFile()
                 val ip = getIP()
                 val port = getPort()
                 try
-                    client(ip, port, file(0), file(1))
+                    client(ip, port)
                 catch
                     case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress any key")
             case _ => exit()
@@ -37,11 +37,11 @@ def getPort(): Int = {
         case e: Exception => 42069
 }
 
-def getFile(): Array[String] = {
-    val filepath = browse()
-    val relative = getRelativePath(filepath)
-    Array[String](relative, filepath)
-}
+// def getFile(): Array[String] = {
+//     val filepath = browse()
+//     val relative = getRelativePath(filepath)
+//     Array[String](relative, filepath)
+// }
 
 def getIP(): String = {
     val answer = readUserInput("Input the IP to connect to (default: localhost)")

@@ -2,12 +2,15 @@ package yakumo
 
 import java.net.ServerSocket
 import java.net.Socket
+import java.io.InputStream
+import java.io.OutputStream
+
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.File
 
 
-def client(host: String = "localhost", port: Int = 42069, filename: String, filepath: String) = {
+def client(host: String = "localhost", port: Int = 42069) = {
     println(s"Connecting to host \"$host\" at port $port")
     val sock = new Socket(host, port)
     val os = sock.getOutputStream()
@@ -20,38 +23,94 @@ def client(host: String = "localhost", port: Int = 42069, filename: String, file
     is.read(status)
 
     if status(0) == 1 then
-        println("Connection accepted, uploading file")
-        val len = File(filepath).length()
-        val lenbytes = longToBytes(len)
-        os.write(lenbytes)
-
-        val namelen = filename.length
-        val namelen_bytes = intToBytes(namelen)
-        val name_bytes = stringToBytes(filename)
-        os.write(namelen_bytes)
-        os.write(name_bytes)
-        is.read(status)
-        if status(0) == 1 then
-            println("Uploading file")
-            clientWrite(sock, filepath, len)
+        val mode = readUserInput("Connection accepted, uploading file\n0: Download     1: Upload\nChoose a mode")
+        if mode == "0" then
+            os.write(Array[Byte](0))
+            clientDownload(is, os)
         else
-            println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
+            os.write(Array[Byte](1))
+            clientUpload(is, os)
     else
         println("Incorrect password!")
 }
 
-def clientWrite(sock: Socket, filepath: String, len: Long) = {
-    val os = sock.getOutputStream()
-    val filein = new FileInputStream(filepath)
-    val data = new Array[Byte](256)
-    while filein.available() >= 256 do {
-        filein.read(data)
-        os.write(data)
-    }
-    if filein.available() > 0 then
-        val finaldata = new Array[Byte](filein.available())
-        filein.read(finaldata)
-        os.write(finaldata)
-    filein.close()
-    readUserInput("File upload successful!\n\nPress any key")
+def clientDownload(is: InputStream, os: OutputStream) = {
+    //while is.available == 0 do {Thread.sleep(350)}
+    val howMany_byte = new Array[Byte](4)
+    is.read(howMany_byte)
+    val howMany = bytesToInt(howMany_byte)
+    val filenames = receiveServerFileInfo(is, howMany)
+    val choice = chooseServerFile(filenames)
+    val choicebytes = intToBytes(choice)
+    os.write(choicebytes)
+    val len = File(filenames(choice)).length()
+    println(s"--Downloading File--\nName: ${filenames(choice)}\n Length: $len bytes")
+    download(is, filenames(choice), len)
 }
+
+def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: List[String] = List[String]()): List[String] = {
+    if i <= howMany then
+        val lenbytes = new Array[Byte](4)
+        is.read(lenbytes)
+        val len = bytesToInt(lenbytes)
+        val namebytes = new Array[Byte](len)
+        is.read(namebytes)
+        val name = bytesToString(namebytes)
+        receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
+    else
+        filenames
+}
+
+def clientUpload(is: InputStream, os: OutputStream) = {
+    val filepath = browse()
+    val filename = getRelativePath(filepath)
+
+    val len = File(filepath).length()
+    val lenbytes = longToBytes(len)
+    val namelen = filename.length
+    val namelen_bytes = intToBytes(namelen)
+    val name_bytes = stringToBytes(filename)
+    os.write(lenbytes)
+    os.write(namelen_bytes)
+    os.write(name_bytes)
+    val status = new Array[Byte](1)
+    is.read(status)
+    if status(0) == 1 then
+        println("Connection accepted, uploading file")
+        upload(os, filepath, len)
+    else
+        println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
+}
+
+def chooseServerFile(files: List[String]): Int = {
+    var i = 0
+    var screen = "--Server File Storage--"
+    var filesInLine = 0
+    for file <- files do {
+        if filesInLine < 3 then
+            screen ++= s"$i: $file     "
+            filesInLine += 1
+        else  
+            screen ++= s"$i: $file\n"
+            filesInLine = 0
+        i += 1
+    }
+    val choice = readUserInput(screen)
+    choice.toInt
+}
+
+// def clientWrite(sock: Socket, filepath: String, len: Long) = {
+//     val os = sock.getOutputStream()
+//     val filein = new FileInputStream(filepath)
+//     val data = new Array[Byte](256)
+//     while filein.available() >= 256 do {
+//         filein.read(data)
+//         os.write(data)
+//     }
+//     if filein.available() > 0 then
+//         val finaldata = new Array[Byte](filein.available())
+//         filein.read(finaldata)
+//         os.write(finaldata)
+//     filein.close()
+//     readUserInput("File upload successful!\n\nPress any key")
+// }
