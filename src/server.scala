@@ -69,7 +69,7 @@ def serverDownload(is: InputStream, os: OutputStream) = {
         println(s"--Downloading File--\nName: $name\nLength: $len bytes\n")
         os.write(Array[Byte](1))
         download(is, name, len)
-        println("File successfully written!\nClosing connection")
+        println(s"Finished downloading $name!\nClosing connection")
     else
         println(s"Requested file transfer exceeds ${maxperfile}GB or file name length is 0\nClosing connection")
         os.write(Array[Byte](0))
@@ -83,11 +83,12 @@ def serverUpload(is: InputStream, os: OutputStream) = {
     val len = File(files(chosen)).length()
     // val lenbytes = longToBytes(len)
     // val namelen_bytes = intToBytes(files(chosen).length)
-    println(s"--Uploading File--\nName: ${files(chosen)}\n Length: $len bytes")
+    println(s"--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
     // os.write(lenbytes)
     // os.write(namelen_bytes)
     // os.write(stringToBytes(files(chosen)))
     upload(os, files(chosen), len)
+    println(s"Finished uploading ${files(chosen)}!\nClosing connection")
 }
 
 def sendServerFileInfo(os: OutputStream): Array[String] = {

@@ -84,7 +84,7 @@ def clientUpload(is: InputStream, os: OutputStream) = {
 
 def chooseServerFile(files: List[String]): Int = {
     var i = 0
-    var screen = "--Server File Storage--"
+    var screen = "--Server File Storage--\n\n"
     var filesInLine = 0
     for file <- files do {
         if filesInLine < 3 then
