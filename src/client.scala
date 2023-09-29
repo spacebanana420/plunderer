@@ -45,7 +45,9 @@ def clientDownload(is: InputStream, os: OutputStream) = {
         val choice = chooseServerFile(filenames)
         val choicebytes = intToBytes(choice)
         os.write(choicebytes)
-        val len = File(filenames(choice)).length()
+        val lenbytes = new Array[Byte](8)
+        is.read(lenbytes)
+        val len = bytesToLong(lenbytes)
         println(s"--Downloading File--\nName: ${filenames(choice)}\nLength: $len bytes")
         download(is, filenames(choice), len)
     else
@@ -63,6 +65,23 @@ def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: 
         receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
     else
         filenames
+}
+
+def chooseServerFile(files: List[String]): Int = {
+    var i = 0
+    var screen = "--Server File Storage--\n\n"
+    var filesInLine = 0
+    for file <- files do {
+        if filesInLine < 3 then
+            screen ++= s"$i: $file     "
+            filesInLine += 1
+        else  
+            screen ++= s"$i: $file\n"
+            filesInLine = 0
+        i += 1
+    }
+    val choice = readUserInput(screen)
+    choice.toInt
 }
 
 def clientUpload(is: InputStream, os: OutputStream) = {
@@ -84,23 +103,6 @@ def clientUpload(is: InputStream, os: OutputStream) = {
         upload(os, filepath, len)
     else
         println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
-}
-
-def chooseServerFile(files: List[String]): Int = {
-    var i = 0
-    var screen = "--Server File Storage--\n\n"
-    var filesInLine = 0
-    for file <- files do {
-        if filesInLine < 3 then
-            screen ++= s"$i: $file     "
-            filesInLine += 1
-        else  
-            screen ++= s"$i: $file\n"
-            filesInLine = 0
-        i += 1
-    }
-    val choice = readUserInput(screen)
-    choice.toInt
 }
 
 // def clientWrite(sock: Socket, filepath: String, len: Long) = {
