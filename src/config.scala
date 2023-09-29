@@ -2,7 +2,15 @@ package yakumo
 
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 
+
+def createConfig() = {
+    val defaultConfig = stringToBytes("password=test123\nmaxperfile=20\nmaxtotal=30")
+    val file = new FileOutputStream("config.txt")
+    file.write(defaultConfig)
+    file.close()
+}
 
 def getConfigFile(): List[String] = {
     val file = new FileInputStream("config.txt")
@@ -62,4 +70,18 @@ def configToStringList(cfgBytes: Array[Byte], line: String = "", cfgstr: List[St
         configToStringList(cfgBytes, "", cfgstr :+ line, i+1)
     else
         configToStringList(cfgBytes, line + chr, cfgstr, i+1)
+}
+
+def isConfigFine(): Boolean = {
+    val config = getConfigFile()
+    val password = getPassword(config)
+    val perfile = getFileLimit(config, "perfile")
+    val total = getFileLimit(config, "total")
+
+    val isConfigOk =
+        if password != "" && perfile != -1 && total != -1 then
+            true
+        else
+            false
+    isConfigOk
 }

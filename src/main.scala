@@ -3,7 +3,6 @@ package yakumo
 import java.io.File
 import java.io.FileOutputStream
 import scala.sys.exit
-import scala.sys.process.*
 
 @main def main() = { //add user authentication and unique folder per user
     if File("config.txt").isFile() == false then
@@ -49,38 +48,4 @@ def getIP(): String = {
         answer
     else
         "localhost"
-}
-
-def readUserInput(message: String = ""): String = {
-    if message != "" then
-        println(message)
-    scala.io.StdIn.readLine()
-}
-
-def clear() = { //test windows support
-    if File("C:").isDirectory == false then
-        List[String]("clear").!
-    else
-        List[String]("cmd", "/c", "cls").!
-}
-
-def createConfig() = {
-    val defaultConfig = stringToBytes("password=test123\nmaxperfile=20\nmaxtotal=30")
-    val file = new FileOutputStream("config.txt")
-    file.write(defaultConfig)
-    file.close()
-}
-
-def isConfigFine(): Boolean = {
-    val config = getConfigFile()
-    val password = getPassword(config)
-    val perfile = getFileLimit(config, "perfile")
-    val total = getFileLimit(config, "total")
-
-    val isConfigOk =
-        if password != "" && perfile != -1 && total != -1 then
-            true
-        else
-            false
-    isConfigOk
 }

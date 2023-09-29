@@ -9,8 +9,6 @@ import java.io.InputStream
 import java.io.OutputStream
 
 def download(is: InputStream, name: String, len: Long) = {
-    // val is = sock.getInputStream()
-    // val os = sock.getOutputStream()
     val fileout = new FileOutputStream(getDownloadName(name))
     var buf = 0
     val data = new Array[Byte](256)
