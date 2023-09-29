@@ -31,7 +31,8 @@ def client(host: String = "localhost", port: Int = 42069) = {
             os.write(Array[Byte](1))
             clientUpload(is, os)
     else
-        println("Incorrect password!")
+        println("Incorrect password! Connection was refused")
+    //sock.close()
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = {
@@ -39,13 +40,16 @@ def clientDownload(is: InputStream, os: OutputStream) = {
     val howMany_byte = new Array[Byte](4)
     is.read(howMany_byte)
     val howMany = bytesToInt(howMany_byte)
-    val filenames = receiveServerFileInfo(is, howMany)
-    val choice = chooseServerFile(filenames)
-    val choicebytes = intToBytes(choice)
-    os.write(choicebytes)
-    val len = File(filenames(choice)).length()
-    println(s"--Downloading File--\nName: ${filenames(choice)}\n Length: $len bytes")
-    download(is, filenames(choice), len)
+    if howMany != 0 then
+        val filenames = receiveServerFileInfo(is, howMany)
+        val choice = chooseServerFile(filenames)
+        val choicebytes = intToBytes(choice)
+        os.write(choicebytes)
+        val len = File(filenames(choice)).length()
+        println(s"--Downloading File--\nName: ${filenames(choice)}\n Length: $len bytes")
+        download(is, filenames(choice), len)
+    else
+        println("The server's storage is empty!\nClosing connection")
 }
 
 def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: List[String] = List[String]()): List[String] = {

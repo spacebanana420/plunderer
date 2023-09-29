@@ -15,7 +15,10 @@ def server(port: Int = 42069) = {
     val ss = new ServerSocket(port)
     //var closeServer = false
     while true do {
-        serverSession(ss)
+        try
+            serverSession(ss)
+        catch
+            case e: Exception => println("Connection with client closed!\nClient interrupted connection unexpectedly!")
     }
     ss.close()
 }
