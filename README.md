@@ -5,8 +5,15 @@ The server opens and waits for a connection request. Once a client connects to t
 
 # Download & how to use
 
-## Download
+## Supported platforms
+Yakumo is cross-platform and very portable. It is expected to work on most desktop/server operating systems.
 
+Although cross-platform support is very good, it's officially tested for these systems:
+* Linux-based systems
+* Windows
+* FreeBSD
+
+## Download
 Grab the program from the [releases](https://github.com/spacebanana420/yakumo/releases)
 
 ## Requirements

@@ -23,7 +23,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
     is.read(status)
 
     if status(0) == 1 then
-        val mode = readUserInput("Connection accepted, uploading file\n0: Download     1: Upload\nChoose a mode")
+        val mode = readUserInput("Connection accepted\n\n0: Download     1: Upload\nChoose a mode")
         if mode == "0" then
             os.write(Array[Byte](0))
             clientDownload(is, os)
@@ -46,7 +46,7 @@ def clientDownload(is: InputStream, os: OutputStream) = {
         val choicebytes = intToBytes(choice)
         os.write(choicebytes)
         val len = File(filenames(choice)).length()
-        println(s"--Downloading File--\nName: ${filenames(choice)}\n Length: $len bytes")
+        println(s"--Downloading File--\nName: ${filenames(choice)}\nLength: $len bytes")
         download(is, filenames(choice), len)
     else
         println("The server's storage is empty!\nClosing connection")
@@ -80,7 +80,7 @@ def clientUpload(is: InputStream, os: OutputStream) = {
     val status = new Array[Byte](1)
     is.read(status)
     if status(0) == 1 then
-        println("Connection accepted, uploading file")
+        println(s"--Uploading File--\nName: $filename\nLength: $len bytes")
         upload(os, filepath, len)
     else
         println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
