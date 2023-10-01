@@ -33,6 +33,24 @@ def bytesToString(txt: Array[Byte]): String = {
     str
 }
 
+def utf16ToBytes(txt: String, bytes: Array[Byte] = Array[Byte](), i: Int = 0): Array[Byte] = {
+    if i < txt.length then
+        utf16ToBytes(txt, bytes ++ shortToBytes(txt(i).toShort), i+1)
+    else
+        bytes
+}
+
+// def bytesToUtf16(txt: Array[Byte], buf: Short = 0, i: Int = 0): String = {
+
+// }
+
+def shortToBytes(num: Short): Array[Byte] = {
+    Array[Byte](
+    (num>>8).toByte,
+    num.toByte
+    )
+}
+
 def intToBytes(num: Int): Array[Byte] = {
     Array[Byte](
     (num>>24).toByte,
@@ -58,6 +76,8 @@ def longToBytes(num: Long): Array[Byte] = {
 def bytesToLong(bytes: Array[Byte]): Long = ByteBuffer.wrap(bytes).getLong()
 
 def bytesToInt(bytes: Array[Byte]): Int = ByteBuffer.wrap(bytes).getInt()
+
+def bytesToShort(bytes: Array[Byte]): Short = ByteBuffer.wrap(bytes).getShort()
 
 // def getHeader(instruction: String): Array[Byte] = {
 //     instruction match

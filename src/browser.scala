@@ -43,7 +43,11 @@ def browseLoop(basedir: String): String = {
 }
 
 def fileBrowser(basedir: String): Array[Array[String]] = {
-    var browserScreen = s"$basedir\n\n0: Exit     1: Go back\n\n---Directories---\n"
+    val green = foreground("green")
+    val red = foreground("red")
+    val default = foreground("default")
+
+    var browserScreen = s"$basedir\n\n${red}0:$default Exit     ${green}1:$default Go back\n\n---Directories---\n"
     val paths = File(basedir).list()
 
     val dirs = paths.filter(x => File(s"${basedir}/${x}").isFile() == false)
@@ -52,10 +56,10 @@ def fileBrowser(basedir: String): Array[Array[String]] = {
     var pathNum = 2
     for dir <- dirs do {
         if pathsAdded < 3 then
-            browserScreen ++= s"${pathNum}: ${dir}     "
+            browserScreen ++= s"$green${pathNum}:$default ${dir}     "
             pathsAdded += 1
         else
-            browserScreen ++= s"${pathNum}: ${dir}\n"
+            browserScreen ++= s"$green${pathNum}:$default ${dir}\n"
             pathsAdded = 0
         pathNum += 1
     }
@@ -63,10 +67,10 @@ def fileBrowser(basedir: String): Array[Array[String]] = {
     browserScreen ++= "\n---Files---\n"
     for file <- files do {
         if pathsAdded < 3 then
-            browserScreen ++= s"${pathNum}: ${file}     "
+            browserScreen ++= s"$green${pathNum}:$default ${file}     "
             pathsAdded += 1
         else
-            browserScreen ++= s"${pathNum}: ${file}\n"
+            browserScreen ++= s"$green${pathNum}:$default ${file}\n"
             pathsAdded = 0
         pathNum += 1
     }

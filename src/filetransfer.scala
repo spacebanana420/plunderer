@@ -9,7 +9,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 def download(is: InputStream, name: String, len: Long) = {
-    val fileout = new FileOutputStream(getDownloadName(name))
+    val fileout = FileOutputStream(getDownloadName(name))
     var buf = 0
     val data = new Array[Byte](256)
     while buf <= len - 256 do {
@@ -25,7 +25,7 @@ def download(is: InputStream, name: String, len: Long) = {
 }
 
 def upload(os: OutputStream, filepath: String, len: Long) = {
-    val filein = new FileInputStream(filepath)
+    val filein = FileInputStream(filepath)
     val data = new Array[Byte](256)
     while filein.available() >= 256 do {
         filein.read(data)

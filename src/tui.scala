@@ -19,8 +19,7 @@ def readUserInput(message: String = ""): String = {
 // }
 
 def spawnScreen(ui: String) = {
-    //println(s"\u001B[1J\u001B[H$ui")
-    println(s"\u001B[H\u001B[0J$ui")
+    print(s"\u001B[H\u001B[2J$ui")
 }
 
 def clear() = { //cross platform solution smiley face? needs to be tested
