@@ -28,7 +28,7 @@ def serverSession(ss: ServerSocket) = {
     val os = sock.getOutputStream()
     val config = getConfigFile()
     val password = getPassword(config)
-    val dir getStorageDirectory(config)
+    val dir = getStorageDirectory(config)
 
     println("New connection\nRequesting password")
     while is.available() == 0 do {
