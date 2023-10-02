@@ -48,6 +48,8 @@ def getStorageDirectory(config: List[String]): String = {
     val setting = getLineSetting(dirline)
     if setting == "\"\"" then
         ""
+    else if setting(setting.length-1) != '/' then
+       s"$setting/"
     else
         setting
 }

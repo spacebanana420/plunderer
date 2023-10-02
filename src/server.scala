@@ -71,7 +71,7 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
     if len / 1000000000 <= maxperfile && namelen > 0 then
         println(s"--Downloading File--\nName: $name\nLength: $len bytes\n")
         os.write(Array[Byte](1))
-        download(is, s"$dir/$name", len)
+        download(is, s"$dir$name", len)
         println(s"Finished downloading $name!\nClosing connection")
     else
         println(s"Requested file transfer exceeds ${maxperfile}GB or file name length is 0\nClosing connection")
@@ -90,7 +90,7 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
     os.write(lenbytes)
     // os.write(namelen_bytes)
     // os.write(stringToBytes(files(chosen)))
-    upload(os, s"$dir/${files(chosen)}", len)
+    upload(os, s"$dir${files(chosen)}", len)
     println(s"Finished uploading ${files(chosen)}!\nClosing connection")
 }
 
