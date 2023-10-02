@@ -9,10 +9,9 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.File
 
-
 def server(port: Int = 42069) = {
     println(s"Opened server with port $port\nWaiting for incoming requests...")
-    val ss = new ServerSocket(port)
+    val ss = ServerSocket(port)
     //var closeServer = false
     while true do {
         try
@@ -29,6 +28,7 @@ def serverSession(ss: ServerSocket) = {
     val os = sock.getOutputStream()
     val config = getConfigFile()
     val password = getPassword(config)
+    val dir getStorageDirectory(config)
 
     println("New connection\nRequesting password")
     while is.available() == 0 do {
@@ -43,16 +43,16 @@ def serverSession(ss: ServerSocket) = {
         val mode = new Array[Byte](1)
         is.read(mode)
         if mode(0) == 0 then
-            serverUpload(is, os)
+            serverUpload(is, os, dir)
         else
-            serverDownload(is, os)
+            serverDownload(is, os, dir)
     else
         println("Incorrect password received, closing connection")
         os.write(Array[Byte](0))
     sock.close()
 }
 
-def serverDownload(is: InputStream, os: OutputStream) = {
+def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
     val config = getConfigFile()
     val maxperfile = getFileLimit(config, "perfile")
     val maxtotal = getFileLimit(config, "total")
@@ -71,15 +71,15 @@ def serverDownload(is: InputStream, os: OutputStream) = {
     if len / 1000000000 <= maxperfile && namelen > 0 then
         println(s"--Downloading File--\nName: $name\nLength: $len bytes\n")
         os.write(Array[Byte](1))
-        download(is, name, len)
+        download(is, s"$dir/$name", len)
         println(s"Finished downloading $name!\nClosing connection")
     else
         println(s"Requested file transfer exceeds ${maxperfile}GB or file name length is 0\nClosing connection")
         os.write(Array[Byte](0))
 }
 
-def serverUpload(is: InputStream, os: OutputStream) = {
-    val files = sendServerFileInfo(os)
+def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
+    val files = sendServerFileInfo(os, dir)
     val chosen_byte = new Array[Byte](4)
     is.read(chosen_byte)
     val chosen = bytesToInt(chosen_byte)
@@ -90,13 +90,13 @@ def serverUpload(is: InputStream, os: OutputStream) = {
     os.write(lenbytes)
     // os.write(namelen_bytes)
     // os.write(stringToBytes(files(chosen)))
-    upload(os, files(chosen), len)
+    upload(os, s"$dir/${files(chosen)}", len)
     println(s"Finished uploading ${files(chosen)}!\nClosing connection")
 }
 
-def sendServerFileInfo(os: OutputStream): Array[String] = {
+def sendServerFileInfo(os: OutputStream, dir: String): Array[String] = {
     //val os = sock.getOutputStream()
-    val files = File(".").list().filter(x => File(x).isFile == true)
+    val files = File(dir).list().filter(x => File(x).isFile == true)
     val howMany = intToBytes(files.length)
     os.write(howMany)
     for file <- files do {

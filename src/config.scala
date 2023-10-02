@@ -6,10 +6,26 @@ import java.io.FileOutputStream
 
 
 def createConfig() = {
-    val defaultConfig = stringToBytes("password=test123\nmaxperfile=20\nmaxtotal=30")
+    val defaultConfig = stringToBytes("password=test123\ndirectory=\"\"\nmaxperfile=20\nmaxtotal=30")
     val file = new FileOutputStream("config.txt")
     file.write(defaultConfig)
     file.close()
+}
+
+def isConfigFine(): Boolean = {
+    val config = getConfigFile()
+    val password = getPassword(config)
+    val dir = getStorageDirectory(config)
+    val direxists = File(dir).isDirectory()
+    val perfile = getFileLimit(config, "perfile")
+    val total = getFileLimit(config, "total")
+
+    val isConfigOk =
+        if password != "" && (dir == "\"\"" || direxists == true) && perfile != -1 && total != -1 then
+            true
+        else
+            false
+    isConfigOk
 }
 
 def getConfigFile(): List[String] = {
@@ -25,6 +41,15 @@ def getConfigFile(): List[String] = {
 def getPassword(config: List[String]): String = {
     val passline = findLine(config, "password=")
     getLineSetting(passline)
+}
+
+def getStorageDirectory(config: List[String]): String = {
+    val dirline = findLine(config, "directory=")
+    val setting = getLineSetting(dirline)
+    if setting == "\"\"" then
+        ""
+    else
+        setting
 }
 
 def getFileLimit(config: List[String], mode: String): Int = {
@@ -70,18 +95,4 @@ def configToStringList(cfgBytes: Array[Byte], line: String = "", cfgstr: List[St
         configToStringList(cfgBytes, "", cfgstr :+ line, i+1)
     else
         configToStringList(cfgBytes, line + chr, cfgstr, i+1)
-}
-
-def isConfigFine(): Boolean = {
-    val config = getConfigFile()
-    val password = getPassword(config)
-    val perfile = getFileLimit(config, "perfile")
-    val total = getFileLimit(config, "total")
-
-    val isConfigOk =
-        if password != "" && perfile != -1 && total != -1 then
-            true
-        else
-            false
-    isConfigOk
 }

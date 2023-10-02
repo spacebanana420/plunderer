@@ -12,7 +12,7 @@ import java.io.File
 
 def client(host: String = "localhost", port: Int = 42069) = {
     println(s"Connecting to host \"$host\" at port $port")
-    val sock = new Socket(host, port)
+    val sock = Socket(host, port)
     val os = sock.getOutputStream()
     val is = sock.getInputStream()
     println("Connection established to server")

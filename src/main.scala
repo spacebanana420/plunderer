@@ -18,6 +18,7 @@ import scala.sys.exit
                     server(getPort())
                 else
                     println("You need to have a properly configured config.txt file!\nCancelling server launch")
+                    exit()
             case "2" =>
                 // val file = getFile()
                 val ip = getIP()
@@ -42,6 +43,16 @@ def getPort(): Int = {
 //     val filepath = browse()
 //     val relative = getRelativePath(filepath)
 //     Array[String](relative, filepath)
+// }
+
+// def getDir(): String = {
+//     val default = File("").getAbsolutePath()
+//     val answer = readUserInput(s"Choose the server's storage directory\nDefault: $default")
+//     if File(answer).isDirectory() == false then
+//         println(s"The directory $answer does not exist! Using default directory")
+//         default
+//     else
+//         answer
 // }
 
 def getIP(): String = {

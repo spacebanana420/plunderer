@@ -1,3 +1,4 @@
 password=test123
+directory=""
 maxperfile=20
 maxtotal=30
