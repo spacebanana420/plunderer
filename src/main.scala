@@ -32,7 +32,9 @@ import scala.sys.exit
 }
 
 def getPort(): Int = {
-    val portstr = readUserInput("Type the port to use\ndefault: 42069\n")
+    val yellow = foreground("yellow")
+    val default = foreground("default")
+    val portstr = readUserInput(s"Type the port to use\nDefault: ${yellow}42069${default}\n")
     try
         portstr.toInt
     catch
@@ -56,7 +58,9 @@ def getPort(): Int = {
 // }
 
 def getIP(): String = {
-    val answer = readUserInput("Input the IP to connect to (default: localhost)")
+    val yellow = foreground("yellow")
+    val default = foreground("default")
+    val answer = readUserInput(s"Input the IP to connect to (default: ${yellow}localhost${default})")
     if answer != "" then
         answer
     else
