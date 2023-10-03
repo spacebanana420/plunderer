@@ -51,3 +51,12 @@ def getDownloadName(name: String, i: Int = 1): String = {
             getDownloadName(name, i+1)
     finalname
 }
+
+def isUtf16(name: String, i: Int = 0, isutf: Boolean = false): Boolean = {
+    if i == name.length then
+        isutf
+    else if name(i).toShort == name(i).toByte && isutf == false then
+        isUtf16(name, i+1, false)
+    else
+        isUtf16(name, i+1, true)
+}
