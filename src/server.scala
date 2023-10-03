@@ -80,18 +80,21 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
 
 def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
     val files = sendServerFileInfo(os, dir)
-    val chosen_byte = new Array[Byte](4)
-    is.read(chosen_byte)
-    val chosen = bytesToInt(chosen_byte)
-    val len = File(files(chosen)).length()
-    val lenbytes = longToBytes(len)
-    // val namelen_bytes = intToBytes(files(chosen).length)
-    println(s"--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
-    os.write(lenbytes)
-    // os.write(namelen_bytes)
-    // os.write(stringToBytes(files(chosen)))
-    upload(os, s"$dir${files(chosen)}", len)
-    println(s"Finished uploading ${files(chosen)}!\nClosing connection")
+    if files.length == 0 then
+        println("The server storage is empty, there is nothing to send to the client\nClosing connection...")
+    else
+        val chosen_byte = new Array[Byte](4)
+        is.read(chosen_byte)
+        val chosen = bytesToInt(chosen_byte)
+        val len = File(files(chosen)).length()
+        val lenbytes = longToBytes(len)
+        // val namelen_bytes = intToBytes(files(chosen).length)
+        println(s"--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
+        os.write(lenbytes)
+        // os.write(namelen_bytes)
+        // os.write(stringToBytes(files(chosen)))
+        upload(os, s"$dir${files(chosen)}", len)
+        println(s"Finished uploading ${files(chosen)}!\nClosing connection")
 }
 
 def sendServerFileInfo(os: OutputStream, dir: String): Array[String] = {
