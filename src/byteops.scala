@@ -40,9 +40,14 @@ def utf16ToBytes(txt: String, bytes: Array[Byte] = Array[Byte](), i: Int = 0): A
         bytes
 }
 
-// def bytesToUtf16(txt: Array[Byte], buf: Short = 0, i: Int = 0): String = {
-
-// }
+def bytesToUtf16(txt: Array[Byte], buf: Array[Byte] = Array[Byte](), str: String = "", i: Int = 0): String = {
+    if i == txt.length then
+        str + bytesToShort(buf).toChar
+    else if buf.length == 2 then
+        bytesToUtf16(txt, Array[Byte](txt(i)), str + bytesToShort(buf).toChar, i+1)
+    else
+        bytesToUtf16(txt, buf :+ txt(i), str, i+1)
+}
 
 def shortToBytes(num: Short): Array[Byte] = {
     Array[Byte](
