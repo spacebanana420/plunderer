@@ -8,6 +8,9 @@ import java.net.Socket
 import java.io.InputStream
 import java.io.OutputStream
 
+//File transfer operations, both used by the server and client
+
+
 def download(is: InputStream, name: String, len: Long) = {
     val fileout = FileOutputStream(getDownloadName(name))
     var buf = 0
@@ -36,7 +39,6 @@ def upload(os: OutputStream, filepath: String, len: Long) = {
         filein.read(finaldata)
         os.write(finaldata)
     filein.close()
-    //readUserInput("File upload successful!\n\nPress any key")
 }
 
 def getDownloadName(name: String, i: Int = 1): String = {

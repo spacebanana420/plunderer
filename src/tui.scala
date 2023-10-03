@@ -3,7 +3,7 @@ package yakumo
 import java.io.File
 import scala.sys.process.*
 
-//ANSI escape codes
+//ANSI escape codes, that's where the magic strings come from
 
 def readUserInput(message: String = ""): String = {
     if message != "" then

@@ -9,6 +9,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.File
 
+//This file includes the code exclusive to the server
+
 def server(port: Int = 42069) = {
     println(s"Opened server with port $port\nWaiting for incoming requests...")
     val ss = ServerSocket(port)
@@ -88,17 +90,13 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
         val chosen = bytesToInt(chosen_byte)
         val len = File(files(chosen)).length()
         val lenbytes = longToBytes(len)
-        // val namelen_bytes = intToBytes(files(chosen).length)
         println(s"--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
         os.write(lenbytes)
-        // os.write(namelen_bytes)
-        // os.write(stringToBytes(files(chosen)))
         upload(os, s"$dir${files(chosen)}", len)
         println(s"Finished uploading ${files(chosen)}!\nClosing connection")
 }
 
 def sendServerFileInfo(os: OutputStream, dir: String): Array[String] = {
-    //val os = sock.getOutputStream()
     val files = File(dir).list().filter(x => File(x).isFile == true)
     val howMany = intToBytes(files.length)
     os.write(howMany)

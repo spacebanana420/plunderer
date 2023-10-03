@@ -6,7 +6,7 @@ import java.io.FileOutputStream
 
 
 def createConfig() = {
-    val defaultConfig = stringToBytes("password=test123\ndirectory=\"\"\nmaxperfile=20\nmaxtotal=30")
+    val defaultConfig = stringToBytes("password=test123\ndirectory=.\nmaxperfile=20\nmaxtotal=30")
     val file = new FileOutputStream("config.txt")
     file.write(defaultConfig)
     file.close()
@@ -46,8 +46,8 @@ def getPassword(config: List[String]): String = {
 def getStorageDirectory(config: List[String]): String = {
     val dirline = findLine(config, "directory=")
     val setting = getLineSetting(dirline)
-    if setting == "\"\"" then
-        ""
+    if setting == "\"\"" || setting == "" then
+        "./"
     else if setting(setting.length-1) != '/' then
        s"$setting/"
     else

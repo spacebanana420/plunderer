@@ -9,7 +9,7 @@ import scala.sys.exit
     val default = foreground("default")
     if File("config.txt").isFile() == false then
         createConfig()
-    val mode = readUserInput(s"$cyan[Yakumo v0.2]\n$default--Choose an option--\n0: Exit   1: Server   2: Client\n")
+    val mode = readUserInput(s"$cyan[Yakumo v0.3]\n$default--Choose an option--\n0: Exit   1: Server   2: Client\n")
     while true do {
         mode match
             case "0" => exit()
