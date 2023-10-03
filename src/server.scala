@@ -107,22 +107,3 @@ def sendServerFileInfo(os: OutputStream, dir: String): Array[String] = {
     }
     files
 }
-
-// def serverWrite(sock: Socket, name: String, len: Long) = {
-//     val is = sock.getInputStream()
-//     val os = sock.getOutputStream()
-
-//     val fileout = new FileOutputStream(getDownloadName(name))
-//     var buf = 0
-//     val data = new Array[Byte](256)
-//     while buf <= len-256 do {
-//         is.read(data)
-//         fileout.write(data)
-//         buf += 256
-//     }
-//     if buf < len then
-//         val finalbyte = new Array[Byte]((len-buf).toInt)
-//         is.read(finalbyte)
-//         fileout.write(finalbyte)
-//     fileout.close()
-// }

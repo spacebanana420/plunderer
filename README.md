@@ -29,6 +29,7 @@ The server requires a port, and defaults to ```42069```.
 
 If it doesn't exist, a config.txt file will be created where the program exists. This configuration file is necessary and contains the following options:
 * ```password```: The password for your server connections. Default is ```test123```, and you should change it to something secure of course.
+* ```directory```: The storage directory for the server. Default is "", which corresponds to where yakumo.jar is.
 * ```maxperfile```: The maximum allowed file size per file, in gigabytes.
 * ```maxtotal```: The maximum allowed size for the sum of all the file sizes in the directory. This is unused for now.
 

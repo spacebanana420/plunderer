@@ -4,7 +4,7 @@ import java.io.File
 import java.io.FileOutputStream
 import scala.sys.exit
 
-@main def main() = { //add user authentication and unique folder per user
+@main def main() = {
     val cyan = foreground("cyan")
     val default = foreground("default")
     if File("config.txt").isFile() == false then
@@ -26,7 +26,7 @@ import scala.sys.exit
                 try
                     client(ip, port)
                 catch
-                    case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress any key")
+                    case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
             case _ => exit()
     }
 }

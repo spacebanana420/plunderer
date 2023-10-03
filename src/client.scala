@@ -104,19 +104,3 @@ def clientUpload(is: InputStream, os: OutputStream) = {
     else
         println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
 }
-
-// def clientWrite(sock: Socket, filepath: String, len: Long) = {
-//     val os = sock.getOutputStream()
-//     val filein = new FileInputStream(filepath)
-//     val data = new Array[Byte](256)
-//     while filein.available() >= 256 do {
-//         filein.read(data)
-//         os.write(data)
-//     }
-//     if filein.available() > 0 then
-//         val finaldata = new Array[Byte](filein.available())
-//         filein.read(finaldata)
-//         os.write(finaldata)
-//     filein.close()
-//     readUserInput("File upload successful!\n\nPress any key")
-// }
