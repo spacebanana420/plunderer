@@ -20,12 +20,10 @@ def isConfigFine(): Boolean = {
     val perfile = getFileLimit(config, "perfile")
     val total = getFileLimit(config, "total")
 
-    val isConfigOk =
-        if password != "" && (direxists == true) && perfile != -1 && total != -1 then
-            true
-        else
-            false
-    isConfigOk
+    if password != "" && direxists == true && perfile != -1 && total != -1 then
+        true
+    else
+        false
 }
 
 def getConfigFile(): List[String] = {

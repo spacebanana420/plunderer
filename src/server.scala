@@ -71,7 +71,7 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
     val name = bytesToString(name_bytes)
 
     if len / 1000000000 <= maxperfile && namelen > 0 then
-        println(s"--Downloading File--\nName: $name\nLength: $len bytes\n")
+        println(s"\n--Downloading File--\nName: $name\nLength: $len bytes\n")
         os.write(Array[Byte](1))
         download(is, s"$dir$name", len)
         println(s"Finished downloading $name!\nClosing connection")
@@ -90,7 +90,7 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
         val chosen = bytesToInt(chosen_byte)
         val len = File(files(chosen)).length()
         val lenbytes = longToBytes(len)
-        println(s"--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
+        println(s"\n--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
         os.write(lenbytes)
         upload(os, s"$dir${files(chosen)}", len)
         println(s"Finished uploading ${files(chosen)}!\nClosing connection")
