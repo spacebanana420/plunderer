@@ -33,8 +33,16 @@ def clear() = {
     
 }
 
-//def move cursor
-//def clear shit below cursor
+def moveCursor(mode: String, lines: Int) = {
+    if mode == "up" then
+        print(s"\u001B[${lines}A")
+    else
+        print(s"\u001B[${lines}B")
+}
+
+def clearBelowCursor(line: Int) = {
+    print(s"\u001B[${lines}A\u001B[0K")
+}
 
 
 def foreground(color: String = "default"): String = {
