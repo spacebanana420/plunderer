@@ -11,6 +11,12 @@ def readUserInput(message: String = ""): String = {
     scala.io.StdIn.readLine()
 }
 
+def readUserInputSpawn(message: String = ""): String = {
+    if message != "" then
+        print(s"\u001B[H\u001B[2J$message")
+    scala.io.StdIn.readLine()
+}
+
 // def clear() = { //test windows support
 //     if File("C:").isDirectory == false then
 //         List[String]("clear").!
@@ -26,6 +32,9 @@ def clear() = {
     print("\u001B[H\u001B[2J")
     
 }
+
+//def move cursor
+//def clear shit below cursor
 
 
 def foreground(color: String = "default"): String = {

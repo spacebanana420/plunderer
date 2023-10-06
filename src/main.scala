@@ -9,12 +9,13 @@ import scala.sys.exit
     val default = foreground("default")
     if File("config.txt").isFile() == false then
         createConfig()
-    val mode = readUserInput(s"$cyan[Yakumo v0.3]\n$default--Choose an option--\n0: Exit   1: Server   2: Client\n")
+    val configOk = isConfigFine()
     while true do {
+        val mode = readUserInput(s"$cyan[Yakumo v0.4]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config\n")
         mode match
             case "0" => exit()
             case "1" =>
-                if isConfigFine() == true then
+                if configOk == true then
                     server(getPort())
                 else
                     println("You need to have a properly configured config.txt file!\nCancelling server launch")
@@ -27,8 +28,26 @@ import scala.sys.exit
                     client(ip, port)
                 catch
                     case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
+
+            case "3" => showConfig(configOk)
             case _ => exit()
     }
+}
+
+def showConfig(isok: Boolean) = {
+    val config = getConfigFile()
+    val maxperfile = getFileLimit(config, "perfile")
+    val maxtotal = getFileLimit(config, "total")
+    val password = getPassword(config)
+    val dir = getStorageDirectory(config)
+    val title = foreground("cyan")
+    val default = foreground("default")
+    val okColor =
+        if isok == true then
+            foreground("green")
+        else
+            foreground("red")
+    readUserInput(s"$title//Main settings//$default\nPassword: $password\nStorage location: $dir\n\n$title//File settings//$default\nFile size limit (GB): $maxperfile\nStorage size limit (GB): $maxtotal\n\nIs the config ok?: $okColor$isok$default\n\nPress enter to continue")
 }
 
 def getPort(): Int = {
