@@ -21,10 +21,10 @@ def client(host: String = "localhost", port: Int = 42069) = {
 
     val password = stringToBytes(readUserInput("Input connection password:"))
     os.write(password)
-    val status = new Array[Byte](1)
-    is.read(status)
+    //val status = new Array[Byte](1)
+    //is.read(status)
 
-    if status(0) == 1 then
+    if readStatusByte(is) == 1 then
         val green = foreground("green")
         val default = foreground("default")
         val mode = readUserInput(s"Connection accepted\n\n${green}0:${default} Download     ${green}1:${default} Upload\nChoose a mode")
@@ -40,7 +40,6 @@ def client(host: String = "localhost", port: Int = 42069) = {
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = {
-    //while is.available == 0 do {Thread.sleep(350)}
     val howMany_byte = new Array[Byte](4)
     is.read(howMany_byte)
     val howMany = bytesToInt(howMany_byte)
@@ -103,9 +102,9 @@ def clientUpload(is: InputStream, os: OutputStream) = {
     os.write(lenbytes)
     os.write(namelen_bytes)
     os.write(name_bytes)
-    val status = new Array[Byte](1)
-    is.read(status)
-    if status(0) == 1 then
+    //val status = new Array[Byte](1)
+    //is.read(status)
+    if readStatusByte(is) == 1 then
         println(s"--Uploading File--\nName: $filename\nLength: $len bytes")
         upload(os, filepath, len)
         readUserInput(s"Finished uploading $filename!\nPress enter to continue")

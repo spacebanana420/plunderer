@@ -47,7 +47,7 @@ def showConfig(isok: Boolean) = {
             foreground("green")
         else
             foreground("red")
-    readUserInput(s"$title//Main settings//$default\nPassword: $password\nStorage location: $dir\n\n$title//File settings//$default\nFile size limit (GB): $maxperfile\nStorage size limit (GB): $maxtotal\n\nIs the config ok?: $okColor$isok$default\n\nPress enter to continue")
+    readUserInput(s"$title//Main settings//$default\n\nPassword: $password\nStorage location: $dir\n\n$title//File settings//$default\n\nFile size limit: $maxperfile GB\nStorage size limit: $maxtotal GB\n\nIs the config ok?: $okColor$isok$default\n\nPress enter to continue")
 }
 
 def getPort(): Int = {

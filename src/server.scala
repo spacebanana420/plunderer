@@ -42,9 +42,9 @@ def serverSession(ss: ServerSocket) = {
 
     if inpass == password then
         os.write(Array[Byte](1))
-        val mode = new Array[Byte](1)
-        is.read(mode)
-        if mode(0) == 0 then
+        //val mode = new Array[Byte](1)
+        //is.read(mode)
+        if readStatusByte(is) == 0 then
             serverUpload(is, os, dir)
         else
             serverDownload(is, os, dir)

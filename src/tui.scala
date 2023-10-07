@@ -33,6 +33,14 @@ def clear() = {
     
 }
 
+def saveScreen() = {
+    print("\u001B[?47h")
+}
+
+def restoreScreen() = {
+    print("\u001B[?47l")
+}
+
 def moveCursor(mode: String, lines: Int) = {
     if mode == "up" then
         print(s"\u001B[${lines}A")
