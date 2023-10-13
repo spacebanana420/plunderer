@@ -40,17 +40,13 @@ def client(host: String = "localhost", port: Int = 42069) = {
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = {
-    val howMany_byte = new Array[Byte](4)
-    is.read(howMany_byte)
-    val howMany = bytesToInt(howMany_byte)
+    val howMany = bytesToInt(readBytes(4, is))
     if howMany != 0 then
         val filenames = receiveServerFileInfo(is, howMany)
         val choice = chooseServerFile(filenames)
-        val choicebytes = intToBytes(choice)
-        os.write(choicebytes)
-        val lenbytes = new Array[Byte](8)
-        is.read(lenbytes)
-        val len = bytesToLong(lenbytes)
+        os.write(intToBytes(choice))
+        val len = bytesToLong(readBytes(8, is))
+
         println(s"--Downloading File--\nName: ${filenames(choice)}\nLength: $len bytes")
         download(is, filenames(choice), len)
         readUserInput(s"Finished downloading ${filenames(choice)}!\nPress enter to continue")
@@ -60,12 +56,8 @@ def clientDownload(is: InputStream, os: OutputStream) = {
 
 def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: List[String] = List[String]()): List[String] = {
     if i <= howMany then
-        val lenbytes = new Array[Byte](4)
-        is.read(lenbytes)
-        val len = bytesToInt(lenbytes)
-        val namebytes = new Array[Byte](len)
-        is.read(namebytes)
-        val name = bytesToString(namebytes)
+        val len = bytesToInt(readBytes(4, is))
+        val name = bytesToString(readBytes(len, is))
         receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
     else
         filenames
@@ -92,22 +84,18 @@ def chooseServerFile(files: List[String]): Int = {
 
 def clientUpload(is: InputStream, os: OutputStream) = {
     val filepath = browse()
-    val filename = getRelativePath(filepath)
+    val name = getRelativePath(filepath)
+    val nameLen = name.length
+    val fileLen = File(filepath).length()
 
-    val len = File(filepath).length()
-    val lenbytes = longToBytes(len)
-    val namelen = filename.length
-    val namelen_bytes = intToBytes(namelen)
-    val name_bytes = stringToBytes(filename)
-    os.write(lenbytes)
-    os.write(namelen_bytes)
-    os.write(name_bytes)
-    //val status = new Array[Byte](1)
-    //is.read(status)
+    os.write(intToBytes(nameLen))
+    os.write(stringToBytes(name))
+    os.write(longToBytes(fileLen))
+
     if readStatusByte(is) == 1 then
-        println(s"--Uploading File--\nName: $filename\nLength: $len bytes")
-        upload(os, filepath, len)
-        readUserInput(s"Finished uploading $filename!\nPress enter to continue")
+        println(s"--Uploading File--\nName: $name\nLength: $fileLen bytes")
+        upload(os, filepath)
+        readUserInput(s"Finished uploading $name!\nPress enter to continue")
     else
         println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
 }
