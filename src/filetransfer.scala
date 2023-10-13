@@ -19,6 +19,7 @@ def download(is: InputStream, name: String, len: Long, dir: String = "") = { //b
     var buf = 0
     val data = new Array[Byte](2048)
     while len - buf >= 2048 do {
+        while is.available() < 2048 do {Thread.sleep(50)}
         is.read(data)
         fileout.write(data)
         buf += 2048
