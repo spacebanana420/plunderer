@@ -17,12 +17,12 @@ def download(is: InputStream, name: String, len: Long, dir: String = "") = { //b
         else
             FileOutputStream(getDownloadName(name))
     var buf = 0
-    val data = new Array[Byte](2048)
-    while len - buf >= 2048 do {
-        while is.available() < 2048 do {Thread.sleep(50)}
+    val data = new Array[Byte](4096)
+    while len - buf >= 4096 do {
+        while is.available() < 4096 do {Thread.sleep(50)}
         is.read(data)
         fileout.write(data)
-        buf += 2048
+        buf += 4096
     }
     if buf < len then
         val finalbyte = new Array[Byte]((len - buf).toInt)
@@ -33,8 +33,8 @@ def download(is: InputStream, name: String, len: Long, dir: String = "") = { //b
 
 def upload(os: OutputStream, filepath: String) = {
     val filein = FileInputStream(filepath)
-    val data = new Array[Byte](2048)
-    while filein.available() >= 2048 do {
+    val data = new Array[Byte](4096)
+    while filein.available() >= 4096 do {
         filein.read(data)
         os.write(data)
     }
