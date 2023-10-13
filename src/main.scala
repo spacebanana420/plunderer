@@ -11,7 +11,7 @@ import scala.sys.exit
         createConfig()
     val configOk = isConfigFine()
     while true do {
-        val mode = readUserInput(s"$cyan[Yakumo v0.4]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config\n")
+        val mode = readUserInput(s"$cyan[Yakumo v0.5]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config\n")
         mode match
             case "0" => exit()
             case "1" =>
