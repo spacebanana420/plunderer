@@ -10,18 +10,18 @@ import java.io.OutputStream
 
 //File transfer operations, both used by the server and client
 
-def download(is: InputStream, name: String, len: Long, dir: String = "") = {
+def download(is: InputStream, name: String, len: Long, dir: String = "") = { //broken for client
     val fileout =
         if dir != "" && File(dir).isDirectory() == true then
             FileOutputStream(s"$dir${getDownloadName(name)}")
         else
             FileOutputStream(getDownloadName(name))
     var buf = 0
-    val data = new Array[Byte](256)
-    while len - buf >= 256 do {
+    val data = new Array[Byte](2048)
+    while len - buf >= 2048 do {
         is.read(data)
         fileout.write(data)
-        buf += 256
+        buf += 2048
     }
     if buf < len then
         val finalbyte = new Array[Byte]((len - buf).toInt)
@@ -32,8 +32,8 @@ def download(is: InputStream, name: String, len: Long, dir: String = "") = {
 
 def upload(os: OutputStream, filepath: String) = {
     val filein = FileInputStream(filepath)
-    val data = new Array[Byte](256)
-    while filein.available() >= 256 do {
+    val data = new Array[Byte](2048)
+    while filein.available() >= 2048 do {
         filein.read(data)
         os.write(data)
     }

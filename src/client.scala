@@ -48,8 +48,8 @@ def clientDownload(is: InputStream, os: OutputStream) = {
         val len = bytesToLong(readBytes(8, is))
 
         println(s"--Downloading File--\nName: ${filenames(choice)}\nLength: $len bytes")
-        download(is, filenames(choice), len)
-        readUserInput(s"Finished downloading ${filenames(choice)}!\nPress enter to continue")
+        download(is, filenames(choice), len, "./")
+        readUserInput(s"Finished downloading ${filenames(choice)}\nPress enter to continue")
     else
         println("The server's storage is empty!\nClosing connection")
 }
