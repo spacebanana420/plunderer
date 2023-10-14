@@ -52,6 +52,16 @@ def clearBelowCursor(lines: Int) = {
     print(s"\u001B[${lines}A\u001B[0K")
 }
 
+def printStatus(msg: String, iserror: Boolean) = {
+    val default = foreground("default")
+    if iserror == true then
+        val red = foreground("red")
+        println(s"[${red}Error] $default")
+    else
+        val yellow = foreground("yellow")
+        println(s"[${yellow}Warning] $default")
+}
+
 
 def foreground(color: String = "default"): String = {
     //val acceptedValues = List[String]("reset", "black", "")

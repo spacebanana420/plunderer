@@ -17,11 +17,11 @@ def server(port: Int = 42069) = {
     //var closeServer = false
     while true do {
         try
-            println("---Opening new connection---\nRequesting password\n")
+            println("---Opening new connection---\n")
             serverSession(ss)
             println("---Closing connection---")
         catch
-            case e: Exception => println("Connection with client closed!\nClient interrupted connection unexpectedly!")
+            case e: Exception => printStatus("The server has crashed!", true)
     }
     ss.close()
 }
@@ -33,9 +33,10 @@ def serverSession(ss: ServerSocket) = {
     val config = getConfigFile()
     val password = getPassword(config)
     val dir = getStorageDirectory(config)
+    println("Connection established with client")
 
     while is.available() == 0 do {
-        Thread.sleep(350) 
+        Thread.sleep(250)
     }
     val inpass_bytes = readBytes(is.available(), is)
     val inpass = bytesToString(inpass_bytes)
@@ -52,7 +53,7 @@ def serverSession(ss: ServerSocket) = {
             println("Client requested file upload")
             serverDownload(is, os, dir)
     else
-        println("Incorrect password received")
+        printStatus("Incorrect password received", false)
         os.write(Array[Byte](0))
     sock.close()
 }
@@ -79,7 +80,7 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
         download(is, name, fileLen, dir)
         println(s"Finished downloading $name!")
     else
-        println(s"Requested file transfer exceeds configured limit or file name is empty")
+        printStatus(s"Requested file transfer exceeds configured limit or file name is empty", true)
         os.write(Array[Byte](0))
 }
 
@@ -87,7 +88,7 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
     val files = sendServerFileInfo(os, dir)
     println("Sending storage information")
     if files.length == 0 then
-        println("The server storage is empty, there is nothing to send to the client")
+        printStatus("The server storage is empty, there is nothing to send to the client", true)
     else
         val chosen = bytesToInt(readBytes(4, is))
         val len = File(files(chosen)).length()
