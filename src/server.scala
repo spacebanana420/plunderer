@@ -50,7 +50,7 @@ def serverSession(ss: ServerSocket) = {
             if clientRequest == 1 then
                 println("Client requested file download")
                 serverUpload(is, os, dir)
-            else if clientRequest == 2
+            else if clientRequest == 2 then
                 println("Client requested file upload")
                 serverDownload(is, os, dir)
             else

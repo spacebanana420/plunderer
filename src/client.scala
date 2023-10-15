@@ -34,7 +34,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
             if mode == "1" then
                 os.write(Array[Byte](1))
                 clientDownload(is, os)
-            else if mode == "2"
+            else if mode == "2" then
                 os.write(Array[Byte](2))
                 clientUpload(is, os)
             else
