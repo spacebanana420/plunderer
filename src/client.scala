@@ -27,13 +27,21 @@ def client(host: String = "localhost", port: Int = 42069) = {
     if readStatusByte(is) == 1 then
         val green = foreground("green")
         val default = foreground("default")
-        val mode = readUserInput(s"Connection accepted\n\n${green}0:${default} Download     ${green}1:${default} Upload\nChoose a mode")
-        if mode == "0" then
-            os.write(Array[Byte](0))
-            clientDownload(is, os)
-        else
-            os.write(Array[Byte](1))
-            clientUpload(is, os)
+        println("Password is correct, connection accepted\n")
+        var closeClient = false
+        while closeClient == false do {
+            val mode = readUserInput(s"${green}0:${default} Exit     ${green}1:${default} Download     ${green}2:${default} Upload\nChoose a mode")
+            if mode == "1" then
+                os.write(Array[Byte](1))
+                clientDownload(is, os)
+            else if mode == "2"
+                os.write(Array[Byte](2))
+                clientUpload(is, os)
+            else
+                closeClient = true
+                os.write(Array[Byte](0))
+                println("Closing connection with server")
+        }
     else
         println("Incorrect password! Connection was refused")
     //sock.close()

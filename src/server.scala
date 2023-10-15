@@ -21,7 +21,7 @@ def server(port: Int = 42069) = {
             serverSession(ss)
             println("---Closing connection---")
         catch
-            case e: Exception => printStatus("The server has crashed!", true)
+            case e: Exception => printStatus("The server has crashed or the client disconnected unexpectedly!", true)
     }
     ss.close()
 }
@@ -38,20 +38,25 @@ def serverSession(ss: ServerSocket) = {
     while is.available() == 0 do {
         Thread.sleep(250)
     }
-    val inpass_bytes = readBytes(is.available(), is)
-    val inpass = bytesToString(inpass_bytes)
 
+    val inpass = bytesToString(readBytes(is.available(), is))
     if inpass == password then
-        println("Password is correct")
+        println("Password is correct, proceeding")
         os.write(Array[Byte](1))
-        //val mode = new Array[Byte](1)
-        //is.read(mode)
-        if readStatusByte(is) == 0 then
-            println("Client requested file download")
-            serverUpload(is, os, dir)
-        else
-            println("Client requested file upload")
-            serverDownload(is, os, dir)
+
+        var closeServer = false
+        while closeServer == false do {
+            val clientRequest = readStatusByte(is)
+            if clientRequest == 1 then
+                println("Client requested file download")
+                serverUpload(is, os, dir)
+            else if clientRequest == 2
+                println("Client requested file upload")
+                serverDownload(is, os, dir)
+            else
+                closeServer = true
+                println("Client ended connection")
+        }
     else
         printStatus("Incorrect password received", false)
         os.write(Array[Byte](0))
