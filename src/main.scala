@@ -11,30 +11,35 @@ import scala.sys.exit
         createConfig()
     val configOk = isConfigFine()
     while true do {
-        val mode = readUserInput(s"$cyan[Yakumo v0.5]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config\n")
-        mode match
-            case "0" => exit()
-            case "1" =>
-                if configOk == true then
-                    server(getPort())
-                else
-                    println("You need to have a properly configured config.txt file!\nCancelling server launch")
-                    exit()
-            case "2" =>
-                // val file = getFile()
-                val ip = getIP()
-                val port = getPort()
-                try
-                    client(ip, port)
-                catch
-                    case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
-
-            case "3" => showConfig(configOk)
-            case _ => exit()
+        val mode = readUserInput(s"$cyan[Yakumo v0.6]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config\n")
+        userChoice(mode)
     }
 }
 
-def showConfig(isok: Boolean) = {
+private def userChoice(mode: String) = {
+    val configOk = isConfigFine()
+    mode match
+        case "0" => exit()
+        case "1" =>
+            if configOk == true then
+                server(getPort())
+            else
+                printStatus("You need to have a properly configured config.txt file!\nCancelling server launch", false)
+                exit()
+        case "2" =>
+            // val file = getFile()
+            val ip = getIP()
+            val port = getPort()
+            try
+                client(ip, port)
+            catch
+                case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
+
+        case "3" => showConfig(configOk)
+        case _ => exit()
+}
+
+private def showConfig(isok: Boolean) = {
     val config = getConfigFile()
     val maxperfile = getFileLimit(config, "perfile")
     val maxtotal = getFileLimit(config, "total")
@@ -50,7 +55,7 @@ def showConfig(isok: Boolean) = {
     readUserInput(s"$title//Main settings//$default\n\nPassword: $password\nStorage location: $dir\n\n$title//File settings//$default\n\nFile size limit: $maxperfile GB\nStorage size limit: $maxtotal GB\n\nIs the config ok?: $okColor$isok$default\n\nPress enter to continue")
 }
 
-def getPort(): Int = {
+private def getPort(): Int = {
     val yellow = foreground("yellow")
     val default = foreground("default")
     val portstr = readUserInput(s"Type the port to use\nDefault: ${yellow}42069${default}\n")
@@ -76,7 +81,7 @@ def getPort(): Int = {
 //         answer
 // }
 
-def getIP(): String = {
+private def getIP(): String = {
     val yellow = foreground("yellow")
     val default = foreground("default")
     val answer = readUserInput(s"Input the IP to connect to (default: ${yellow}localhost${default})")
