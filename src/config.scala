@@ -66,7 +66,7 @@ def getFileLimit(config: List[String], mode: String): Int = {
         case e: Exception => -1
 }
 
-def getLineSetting(line: String): String = {
+private def getLineSetting(line: String): String = {
     var copy = false
     var setting = ""
     for chr <- line do {
@@ -78,7 +78,7 @@ def getLineSetting(line: String): String = {
     setting
 }
 
-def findLine(config: List[String], seekstr: String, i: Int = 0): String = {
+private def findLine(config: List[String], seekstr: String, i: Int = 0): String = {
     if config(i).contains(seekstr) == true then
         config(i)
     else if i == config.length-1 then
@@ -87,7 +87,7 @@ def findLine(config: List[String], seekstr: String, i: Int = 0): String = {
         findLine(config, seekstr, i+1)
 }
 
-def configToStringList(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] = {
+private def configToStringList(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] = {
     val chr = cfgBytes(i).toChar
     if i == cfgBytes.length-1 then
         cfgstr :+ line
