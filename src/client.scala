@@ -43,7 +43,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
                 println("Closing connection with server")
         }
     else
-        println("Incorrect password! Connection was refused")
+        printStatus("Incorrect password! Connection was refused", true)
     //sock.close()
 }
 
@@ -52,42 +52,29 @@ def clientDownload(is: InputStream, os: OutputStream) = {
     if howMany != 0 then
         val filenames = receiveServerFileInfo(is, howMany)
         val choice = chooseServerFile(filenames)
-        os.write(intToBytes(choice))
-        val len = bytesToLong(readBytes(8, is))
+        val filenums = linesToNumbers(separateStringLines(choice), filenames.length-1) //needs testing
 
-        println(s"--Downloading File--\nName: ${filenames(choice)}\nLength: $len bytes")
-        download(is, filenames(choice), len, "./")
-        readUserInput(s"Finished downloading ${filenames(choice)}\nPress enter to continue")
+        if filenums.length == 0 then
+            printStatus("You did not choose any file!", false)
+        else
+            var willdownload = ""
+            for file <- filenames do {
+                willdownload += s"$file\n"
+            }
+            println(s"The following files will be downloaded:\n$willdownload")
+        for filenum <- filenums do {
+            os.write(Array[Byte](1))
+            os.write(intToBytes(filenum))
+            val len = bytesToLong(readBytes(8, is))
+
+            println(s"--Downloading File--\nName: ${filenames(filenum)}\nLength: $len bytes")
+            download(is, filenames(filenum), len, "./")
+            println(s"Finished downloading ${filenames(filenum)}\n")
+        }
+        os.write(Array[Byte](0))
+        readUserInput("Press enter to continue")
     else
-        println("The server's storage is empty!\nClosing connection")
-}
-
-def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: List[String] = List[String]()): List[String] = {
-    if i <= howMany then
-        val len = bytesToInt(readBytes(4, is))
-        val name = bytesToString(readBytes(len, is))
-        receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
-    else
-        filenames
-}
-
-def chooseServerFile(files: List[String]): Int = {
-    val green = foreground("green")
-    val default = foreground("default")
-    var i = 0
-    var screen = "--Server File Storage--\n\n"
-    var filesInLine = 0
-    for file <- files do {
-        if filesInLine < 3 then
-            screen ++= s"$green$i:$default $file     "
-            filesInLine += 1
-        else  
-            screen ++= s"$green$i:$default $file\n"
-            filesInLine = 0
-        i += 1
-    }
-    val choice = readUserInput(screen)
-    choice.toInt
+        printStatus("The server's storage is empty!\nClosing connection", true)
 }
 
 def clientUpload(is: InputStream, os: OutputStream) = {
@@ -105,5 +92,56 @@ def clientUpload(is: InputStream, os: OutputStream) = {
         upload(os, filepath)
         readUserInput(s"Finished uploading $name!\nPress enter to continue")
     else
-        println("Connection refused\nFile exceeds the server's configured limit or filename is empty")
+        printStatus("Connection refused\nFile exceeds the server's configured limit or filename is empty", true)
+}
+
+def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: List[String] = List[String]()): List[String] = {
+    if i <= howMany then
+        val len = bytesToInt(readBytes(4, is))
+        val name = bytesToString(readBytes(len, is))
+        receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
+    else
+        filenames
+}
+
+def chooseServerFile(files: List[String]): String = { //what if you choose each at a time instead
+    val green = foreground("green")
+    val default = foreground("default")
+    var i = 0
+    var screen = "--Server File Storage--\n\n"
+    var filesInLine = 0
+    for file <- files do {
+        if filesInLine < 3 then
+            screen ++= s"$green$i:$default $file     "
+            filesInLine += 1
+        else  
+            screen ++= s"$green$i:$default $file\n"
+            filesInLine = 0
+        i += 1
+    }
+    screen ++= "Choose the server file(s) to download\nTo download multiple files, type each number and separate then by a space"
+    readUserInput(screen)
+}
+// needs testing
+private def linesToNumbers(strlines: List[String], maxval: Int, filenums: List[Int] = List(), i: Int = 0): List[Int] = {
+    if i == strlines.length then
+        filenums
+    else
+        try
+            val linenum = strlines(i).toInt
+            if linenum <= maxval then
+                linesToNumbers(strlines, maxval, filenums :+ linenum, i+1)
+            else
+                linesToNumbers(strlines, maxval, filenums, i+1)
+        catch
+            case e: Exception => linesToNumbers(strlines, maxval, filenums, i+1)
+}
+
+private def separateStringLines(str: String, line: String = "", lines: List[String] = List(), i: Int = 0): List[String] = {
+    if i == str.length then
+        lines :+ line
+    else if str(i) == ' ' then
+        separateStringLines(str, "", lines :+ line, i+1)
+    else
+        separateStringLines(str, line + str(i), lines, i+1)
 }

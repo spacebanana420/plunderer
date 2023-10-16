@@ -101,13 +101,15 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
     if files.length == 0 then
         printStatus("The server storage is empty, there is nothing to send to the client", true)
     else
-        val chosen = bytesToInt(readBytes(4, is))
-        val len = File(files(chosen)).length()
-        os.write(longToBytes(len))
+        while readStatusByte(is) != 0 do {
+            val chosen = bytesToInt(readBytes(4, is))
+            val len = File(files(chosen)).length()
+            os.write(longToBytes(len))
 
-        println(s"\n--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
-        upload(os, s"$dir${files(chosen)}")
-        println(s"Finished uploading ${files(chosen)}!")
+            println(s"\n--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
+            upload(os, s"$dir${files(chosen)}")
+            println(s"Finished uploading ${files(chosen)}!")
+        }
 }
 
 def sendServerFileInfo(os: OutputStream, dir: String): Array[String] = {

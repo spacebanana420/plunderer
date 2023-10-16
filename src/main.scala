@@ -11,7 +11,7 @@ import scala.sys.exit
         createConfig()
     val configOk = isConfigFine()
     while true do {
-        val mode = readUserInput(s"$cyan[Yakumo v0.6]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config\n")
+        val mode = readUserInput(s"$cyan[Yakumo v0.7]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config\n")
         userChoice(mode)
     }
 }
@@ -34,7 +34,6 @@ private def userChoice(mode: String) = {
                 client(ip, port)
             catch
                 case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
-
         case "3" => showConfig(configOk)
         case _ => exit()
 }
