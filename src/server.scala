@@ -68,7 +68,7 @@ def isFileValid(len: Long, namelen: Int): Boolean = {
     val maxperfile = getFileLimit(config, "perfile")
     val maxtotal = getFileLimit(config, "total")
     val dir = getStorageDirectory(config)
-    val fileSizes = File(dir).map(x => File(s"$dir$x").length())
+    val fileSizes = File(dir).list().map(x => File(s"$dir$x").length())
     var total: Long = 0
     for size <- fileSizes do {
         total += size
