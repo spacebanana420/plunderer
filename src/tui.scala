@@ -56,10 +56,10 @@ def printStatus(msg: String, iserror: Boolean) = {
     val default = foreground("default")
     if iserror == true then
         val red = foreground("red")
-        println(s"[${red}Error] $default")
+        println(s"[${red}Error$default] $msg")
     else
         val yellow = foreground("yellow")
-        println(s"[${yellow}Warning] $default")
+        println(s"[${yellow}Warning$default] $msg")
 }
 
 

@@ -4,9 +4,6 @@ import java.net.ServerSocket
 import java.net.Socket
 import java.io.InputStream
 import java.io.OutputStream
-
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.File
 
 //This file includes the code exclusive to the client
