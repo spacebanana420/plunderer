@@ -1,15 +1,15 @@
 # Yakumo
 Yakumo is a TCP server and client for transferring files. It uses its own simple protocol.
 
-The server opens and waits for a connection request. Once a client connects to the server, it has to send the correct password to proceed. The client will upload the file to the server, alongside information about the file's name and size. The connection is not encrypted.
+It supports bi-directional file transfer, as well as server security configuration and a convenient terminal interface. Yakumo is mostly convenient for transferring files over LAN. While you can host a public server to the world, you should be careful with the data you transfer and store, as well as the password you set up, as the connection is currently not encrypted.
 
 # Download & how to use
 
 ## Supported platforms
-Yakumo is cross-platform and very portable. It is expected to work on most desktop/server operating systems.
+Yakumo is cross-platform and very portable. It is expected to work all operating systems with Scala/Java support.
 
-Although cross-platform support is very good, it's officially tested for these systems:
-* Linux-based systems
+Although cross-platform support is very good, Yakumo is only officially tested for these systems:
+* Linux-based
 * Windows
 * FreeBSD
 
