@@ -30,7 +30,7 @@ def serverSession(ss: ServerSocket) = {
     val config = getConfigFile()
     val password = getPassword(config)
     val dir = getStorageDirectory(config)
-    println("Connection established with client")
+    println("Connection established with client, waiting for password input")
 
     while is.available() == 0 do {
         Thread.sleep(250)

@@ -28,18 +28,11 @@ def spawnScreen(ui: String) = {
     print(s"\u001B[H\u001B[2J$ui")
 }
 
-def clear() = {
-    print("\u001B[H\u001B[2J")
-    
-}
+def clear() = print("\u001B[H\u001B[2J")
 
-def saveScreen() = {
-    print("\u001B[?47h")
-}
+def saveScreen() = print("\u001B[?47h")
 
-def restoreScreen() = {
-    print("\u001B[?47l")
-}
+def restoreScreen() = print("\u001B[?47l")
 
 def moveCursor(mode: String, lines: Int) = {
     if mode == "up" then
@@ -48,9 +41,7 @@ def moveCursor(mode: String, lines: Int) = {
         print(s"\u001B[${lines}B")
 }
 
-def clearBelowCursor(lines: Int) = {
-    print(s"\u001B[${lines}A\u001B[0K")
-}
+def clearBelowCursor(lines: Int) = print(s"\u001B[${lines}A\u001B[0K")
 
 def printStatus(msg: String, iserror: Boolean) = {
     val default = foreground("default")

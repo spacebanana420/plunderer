@@ -10,7 +10,7 @@ import java.io.OutputStream
 
 //File transfer operations, both used by the server and client
 
-def download(is: InputStream, name: String, len: Long, dir: String = "") = { //broken for client
+def download(is: InputStream, name: String, len: Long, dir: String = "") = {
     val fileout =
         if dir != "" && File(dir).isDirectory() == true then
             FileOutputStream(s"$dir${getDownloadName(name)}")
