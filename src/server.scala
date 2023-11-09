@@ -10,17 +10,23 @@ import java.io.File
 
 def server(port: Int = 42069) = {
   println(s"Opened server with port $port\nWaiting for incoming requests...")
+   writeLog(s"Opened server with port $port")
   val ss = ServerSocket(port)
   //var closeServer = false
   while true do {
     try
       println("---Opening new connection---\n")
+      writeLog("Server is awating connection")
       serverSession(ss)
       println("---Closing connection---")
+      writeLog("Server closed connection")
     catch
-      case e: Exception => printStatus("The server has crashed or the client disconnected unexpectedly!", true)
+      case e: Exception =>
+        printStatus("The server has crashed or the client disconnected unexpectedly!", true)
+        writeLog("Server or connection crashed!")
   }
   ss.close()
+  writeLog(s"Server with port $port closed")
 }
 
 def serverSession(ss: ServerSocket) = {
@@ -46,9 +52,11 @@ def serverSession(ss: ServerSocket) = {
       val clientRequest = readStatusByte(is)
       if clientRequest == 1 then
         println("Client requested file download")
+        writeLog("Client established connection, password is correct, requested file download")
         serverUpload(is, os, dir)
       else if clientRequest == 2 then
         println("Client requested file upload")
+        writeLog("Client established connection, password is correct, requested file upload")
         serverDownload(is, os, dir)
       else
         closeServer = true
@@ -56,6 +64,7 @@ def serverSession(ss: ServerSocket) = {
     }
   else
     printStatus("Incorrect password received", false)
+    writeLog("Client established connection, password is incorrect")
     os.write(Array[Byte](0))
   sock.close()
 }
@@ -84,6 +93,7 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
 
   if isFileValid(fileLen, nameLen) == true then
     println(s"\n--Downloading File--\nName: $name\nLength: $fileLen bytes\n")
+    writeLog(s"Downloading $name\nLength: $fileLen bytes")
     os.write(Array[Byte](1))
     download(is, name, fileLen, dir)
     println(s"Finished downloading $name!")
@@ -104,6 +114,7 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
       os.write(longToBytes(len))
 
       println(s"\n--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
+      writeLog(s"Uploading ${files(chosen)}\nLength: $len bytes")
       upload(os, s"$dir${files(chosen)}")
       println(s"Finished uploading ${files(chosen)}!")
     }
