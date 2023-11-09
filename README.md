@@ -12,6 +12,7 @@ Although cross-platform support is very good, Yakumo is only officially tested f
 * Linux-based
 * Windows
 * FreeBSD
+* Android (with Termux)
 
 ## Download
 Grab the program from the [releases](https://github.com/spacebanana420/yakumo/releases)
