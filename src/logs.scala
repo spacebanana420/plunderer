@@ -9,7 +9,7 @@ import java.io.FileInputStream
 // }
 
 def writeLog(msg: String) =
-    FileOutputStream("log.txt", true).write(s"${stringToBytes(msg)}\n")
+    FileOutputStream("log.txt", true).write(stringToBytes(s"${msg}\n"))
 
 def showLog() = {
   if File("log.txt").isFile() == true then

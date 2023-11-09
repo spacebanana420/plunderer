@@ -45,4 +45,4 @@ Type the password so the server accepts your connection. Your file will be uploa
 # Building from source
 You require Scala 3.0 or higher
 
-Open a terminal in the root of the project and type ```scalac src/*.scala -d yakumo.jar``` or, if you have Bash on your system, just run build.sh: ```bash build.sh``` 
+Open a terminal in the root of the project and type ```scalac src/*.scala src/*/*.scala -d yakumo.jar``` or, if you have Bash on your system, just run build.sh: ```bash build.sh```

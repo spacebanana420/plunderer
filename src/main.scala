@@ -1,4 +1,6 @@
 package yakumo
+import yakumo.client.*
+import yakumo.server.*
 
 import java.io.File
 import java.io.FileOutputStream
@@ -24,7 +26,7 @@ private def userChoice(mode: String) = {
       if configOk == true then
         server(getPort())
       else
-        printStatus("You need to have a properly configured config.txt file!\nCancelling server launch", false)
+        printStatus("You need to have a properly configured config.txt file!\nCancelling server launch", true)
         exit()
     case "2" =>
       // val file = getFile()
@@ -46,12 +48,14 @@ private def showConfig(isok: Boolean) = {
   val password = getPassword(config)
   val dir = getStorageDirectory(config)
   val title = foreground("cyan")
+
   val default = foreground("default")
   val okColor =
     if isok == true then
       foreground("green")
     else
       foreground("red")
+
   readUserInput(s"$title//Main settings//$default\n\nPassword: $password\nStorage location: $dir\n\n$title//File settings//$default\n\nFile size limit: $maxperfile GB\nStorage size limit: $maxtotal GB\n\nIs the config ok?: $okColor$isok$default\n\nPress enter to continue")
 }
 
