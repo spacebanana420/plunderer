@@ -18,7 +18,9 @@ def showLog() = {
     file.read(bytes)
     file.close()
     val log = fileToString(bytes)
-    readUserInput(s"$log\n\nPress enter to continue")
+    val green = foreground("green")
+    val default = foreground("default")
+    readUserInput(s"${green}////LOG START////${default}\n\n$log\n\n${green}////LOG END////${default}\nPress enter to continue")
   else
     readUserInput("There's no log file in the server directory!\nThe server automatically creates one and writes messages to it once it's up and running")
 }
