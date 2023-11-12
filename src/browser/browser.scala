@@ -38,7 +38,7 @@ def browseLoop(basedir: String): String = {
     catch
       case e: Exception => basedir
   else
-    println("Closing client...")
+    println("Closing client...") //maybe add message for server to shut down??
     exit()
 }
 
@@ -46,17 +46,18 @@ def fileBrowser(basedir: String): Array[Array[String]] = {
   val green = foreground("green")
   val red = foreground("red")
   val default = foreground("default")
+  val linewidth = 2
 
   var browserScreen = s"$basedir\n\n${red}0:$default Exit   ${green}1:$default Go back\n\n---Directories---\n"
-  val paths = File(basedir).list()
+  val paths = getPaths(basedir)
 
   val dirs = paths.filter(x => File(s"${basedir}/${x}").isFile() == false)
   val files = paths.filter(x => File(s"${basedir}/${x}").isFile() == true)
   var pathsAdded = 0
   var pathNum = 2
   for dir <- dirs do {
-    if pathsAdded < 3 then
-      browserScreen ++= s"$green${pathNum}:$default ${dir}   "
+    if pathsAdded < linewidth then
+      browserScreen ++= s"$green${pathNum}:$default ${dir}     "
       pathsAdded += 1
     else
       browserScreen ++= s"$green${pathNum}:$default ${dir}\n"
@@ -66,8 +67,8 @@ def fileBrowser(basedir: String): Array[Array[String]] = {
   pathsAdded = 0
   browserScreen ++= "\n---Files---\n"
   for file <- files do {
-    if pathsAdded < 3 then
-      browserScreen ++= s"$green${pathNum}:$default ${file}   "
+    if pathsAdded < linewidth then
+      browserScreen ++= s"$green${pathNum}:$default ${file}     "
       pathsAdded += 1
     else
       browserScreen ++= s"$green${pathNum}:$default ${file}\n"

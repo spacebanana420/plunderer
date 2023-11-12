@@ -8,13 +8,16 @@ import scala.sys.exit
 
 @main def main() = {
   val cyan = foreground("cyan")
+  val green = foreground("green")
   val default = foreground("default")
   if File("config.txt").isFile() == false then
     createConfig()
   val configOk = isConfigFine()
   while true do {
-    val mode = readUserInput(s"$cyan[Yakumo v0.8]\n$default--Choose an option--\n0: Exit   1: Server   2: Client   3: Show config     4: Show log\n")
-    userChoice(mode)
+    clear()
+    val mode = readUserInput(s"$cyan[Yakumo v0.8]\n$default--Choose an option--\n${green}0:${default} Exit   ${green}1:${default} Server   ${green}2:${default} Client   ${green}3:${default} Show config     ${green}4:${default} Show log\n")
+    if mode != "" then
+      userChoice(mode)
   }
 }
 
