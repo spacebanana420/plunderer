@@ -15,7 +15,7 @@ import scala.sys.exit
   val configOk = isConfigFine()
   while true do {
     clear()
-    val mode = readUserInput(s"$cyan[Yakumo v0.8]\n$default--Choose an option--\n${green}0:${default} Exit   ${green}1:${default} Server   ${green}2:${default} Client   ${green}3:${default} Show config     ${green}4:${default} Show log\n")
+    val mode = readUserInput(s"$cyan[Yakumo v0.8]\n$default--Choose an option--\n${green}0:${default} Exit            ${green}1:${default} Server            ${green}2:${default} Client\n${green}3:${default} Show config     ${green}4:${default} Show log\n")
     if mode != "" then
       userChoice(mode)
   }
@@ -24,7 +24,8 @@ import scala.sys.exit
 private def userChoice(mode: String) = {
   val configOk = isConfigFine()
   mode match
-    case "0" => exit()
+    case "0" =>
+      exit()
     case "1" =>
       if configOk == true then
         server(getPort())
@@ -39,9 +40,12 @@ private def userChoice(mode: String) = {
         client(ip, port)
       catch
         case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
-    case "3" => showConfig(configOk)
-    case "4" => showLog()
-    case _ => exit()
+    case "3" =>
+      showConfig(configOk)
+    case "4" =>
+      showLog()
+    case _ =>
+      exit()
 }
 
 private def showConfig(isok: Boolean) = {

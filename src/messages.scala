@@ -15,6 +15,17 @@ def readBytes(len: Int, is: InputStream): Array[Byte] = {
   bytes
 }
 
+def sendMessage(message: String, os: OutputStream) = {
+  val bytes =
+    message match
+      case "go" => Array[Byte](1)
+      case "stop" => Array[Byte](0)
+      case "close" => Array[Byte](2)
+  os.write(bytes)
+}
+
+
+
 // def sendBytes(bytes: Array[Byte], os: OutputStream) = {
 //   os.write(bytes)
 // }
