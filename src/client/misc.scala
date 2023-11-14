@@ -1,12 +1,15 @@
 package yakumo.client
 import yakumo.*
+import yakumo.transfer.*
 
 import java.io.InputStream
 
 def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: List[String] = List[String]()): List[String] = {
   if i <= howMany then
-    val len = bytesToInt(readBytes(4, is)) //seems to be unnecessary
-    val name = bytesToString(readBytes(len, is))
+    //val len = bytesToInt(readBytes(4, is))
+    val len = readInt(is)
+    //val name = bytesToString(readBytes(len, is))
+    val name = readString(len, is)
     receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
   else
     filenames

@@ -1,4 +1,5 @@
-package yakumo
+package yakumo.transfer
+import yakumo.*
 
 import java.io.File
 import java.io.FileInputStream

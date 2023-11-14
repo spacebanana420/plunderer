@@ -1,5 +1,6 @@
 package yakumo.server
 import yakumo.*
+import yakumo.transfer.*
 
 import java.net.ServerSocket
 import java.net.Socket
@@ -11,7 +12,7 @@ import java.io.File
 
 def server(port: Int = 42069) = {
   println(s"Opened server with port $port\nWaiting for incoming requests...")
-   writeLog(s"Opened server with port $port")
+   writeLog(s"///Opened server with port $port///")
   val ss = ServerSocket(port)
   //var closeServer = false
   while true do {
@@ -42,8 +43,8 @@ def serverSession(ss: ServerSocket) = {
   while is.available() == 0 do {
     Thread.sleep(250)
   }
-
-  val inpass = bytesToString(readBytes(is.available(), is))
+  //val inpass = bytesToString(readBytes(is.available(), is))
+  val inpass = readString(is.available(), is)
   if inpass == password then
     println("Password is correct, proceeding")
     os.write(Array[Byte](1))
@@ -71,14 +72,17 @@ def serverSession(ss: ServerSocket) = {
 }
 
 def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
-  val nameLen = bytesToInt(readBytes(4, is))
-  val name = bytesToString(readBytes(nameLen, is))
-  val fileLen = bytesToLong(readBytes(8, is))
+  //val nameLen = bytesToInt(readBytes(4, is))
+  val nameLen = readInt(is)
+  //val name = bytesToString(readBytes(nameLen, is))
+  val name = readString(nameLen, is)
+  //val fileLen = bytesToLong(readBytes(8, is))
+  val fileLen = readLong(is)
   //println(s"Name: $name\nnamelen: $nameLen\nFile length: $fileLen")
 
   if isFileValid(fileLen, nameLen) == true then
     println(s"\n--Downloading File--\nName: $name\nLength: $fileLen bytes\n")
-    writeLog(s"Downloading $name\nLength: $fileLen bytes")
+    writeLog(s"///Downloading $name\nLength: $fileLen bytes///")
     os.write(Array[Byte](1))
     download(is, name, fileLen, dir)
     println(s"Finished downloading $name!")
@@ -94,9 +98,11 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
     printStatus("The server storage is empty, there is nothing to send to the client", false)
   else
     while readStatusByte(is) != 0 do {
-      val chosen = bytesToInt(readBytes(4, is))
+      //val chosen = bytesToInt(readBytes(4, is))
+      val chosen = readInt(is)
       val len = File(files(chosen)).length()
-      os.write(longToBytes(len))
+      //os.write(longToBytes(len))
+      sendLong(len, os)
 
       println(s"\n--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
       writeLog(s"Uploading ${files(chosen)}\nLength: $len bytes")

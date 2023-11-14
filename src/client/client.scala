@@ -1,5 +1,6 @@
 package yakumo.client
 import yakumo.*
+import yakumo.transfer.*
 
 import java.net.ServerSocket
 import java.net.Socket
@@ -17,10 +18,9 @@ def client(host: String = "localhost", port: Int = 42069) = {
   val is = sock.getInputStream()
   println("Connection established to server")
 
-  val password = stringToBytes(readUserInput("Input connection password:"))
-  os.write(password)
-  //val status = new Array[Byte](1)
-  //is.read(status)
+  //val password = stringToBytes(readUserInput("Input connection password:"))
+  sendString(readUserInput("Input connection password:"), os)
+  //os.write(password)
 
   if readStatusByte(is) == 1 then
     val green = foreground("green")
@@ -46,7 +46,8 @@ def client(host: String = "localhost", port: Int = 42069) = {
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = {
-  val howMany = bytesToInt(readBytes(4, is))
+  //val howMany = bytesToInt(readBytes(4, is))
+  val howMany = readInt(is)
   if howMany != 0 then
     val filenames = receiveServerFileInfo(is, howMany)
     val filenums = chooseServerFile(filenames, howMany, is)
@@ -63,8 +64,10 @@ def clientDownload(is: InputStream, os: OutputStream) = {
       println(s"The following files will be downloaded:\n$willdownload")
     for filenum <- filenums do {
       os.write(Array[Byte](1))
-      os.write(intToBytes(filenum))
-      val len = bytesToLong(readBytes(8, is)) //wrap this shit with a function
+      //os.write(intToBytes(filenum))
+      sendInt(filenum, os)
+      //val len = bytesToLong(readBytes(8, is))
+      val len = readLong(is)
 
       println(s"--Downloading File--\nName: ${filenames(filenum)}\nLength: $len bytes")
       download(is, filenames(filenum), len, "./")
@@ -82,9 +85,12 @@ def clientUpload(is: InputStream, os: OutputStream) = {
   val nameLen = name.length
   val fileLen = File(filepath).length()
 
-  os.write(intToBytes(nameLen))
-  os.write(stringToBytes(name))
-  os.write(longToBytes(fileLen))
+  //os.write(intToBytes(nameLen))
+  //os.write(stringToBytes(name))
+  //os.write(longToBytes(fileLen))
+  sendInt(nameLen, os)
+  sendString(name, os)
+  sendLong(fileLen, os)
 
   if readStatusByte(is) == 1 then
     println(s"--Uploading File--\nName: $name\nLength: $fileLen bytes")

@@ -1,5 +1,6 @@
 package yakumo.server
 import yakumo.*
+import yakumo.transfer.*
 
 import java.io.File
 import java.io.OutputStream
