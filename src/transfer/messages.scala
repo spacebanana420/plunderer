@@ -33,18 +33,29 @@ def sendLong(msg: Long, os: OutputStream) = os.write(longToBytes(msg))
 
 def sendString(msg: String, os: OutputStream) = os.write(stringToBytes(msg))
 
-//extend with download, upload, etc
+
 def sendMessage(message: String, os: OutputStream) = {
   val bytes =
     message match
-      case "go" => Array[Byte](1)
       case "stop" => Array[Byte](0)
+      case "go" => Array[Byte](1)
       case "close" => Array[Byte](2)
+      case "getfiles" => Array[Byte](3)
+      case "upload" => Array[Byte](4)
+      case "download" => Array[Byte](5)
+      case _ => Array[Byte](-1)
   os.write(bytes)
 }
 
-
-
-// def sendBytes(bytes: Array[Byte], os: OutputStream) = {
-//   os.write(bytes)
-// }
+def receiveMessage(is: InputStream): String = {
+  val bytes = new Array[Byte](1)
+  is.read(bytes)
+  bytes(0) match
+    case 0 => "stop"
+    case 1 => "go"
+    case 2 => "close"
+    case 3 => "getfiles"
+    case 4 => "upload"
+    case 5 => "download"
+    case _ => "error"
+}

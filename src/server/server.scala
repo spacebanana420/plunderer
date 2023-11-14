@@ -12,7 +12,7 @@ import java.io.File
 
 def server(port: Int = 42069) = {
   println(s"Opened server with port $port\nWaiting for incoming requests...")
-   writeLog(s"///Opened server with port $port///")
+  writeLog(s"///Opened server with port $port///")
   val ss = ServerSocket(port)
   //var closeServer = false
   while true do {
@@ -78,7 +78,6 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
   val name = readString(nameLen, is)
   //val fileLen = bytesToLong(readBytes(8, is))
   val fileLen = readLong(is)
-  //println(s"Name: $name\nnamelen: $nameLen\nFile length: $fileLen")
 
   if isFileValid(fileLen, nameLen) == true then
     println(s"\n--Downloading File--\nName: $name\nLength: $fileLen bytes\n")

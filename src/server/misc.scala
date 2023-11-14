@@ -8,8 +8,9 @@ import java.io.OutputStream
 
 def sendServerFileInfo(os: OutputStream, dir: String): Array[String] = {
   val files = File(dir).list().filter(x => File(x).isFile == true)
-  val howMany = intToBytes(files.length)
-  os.write(howMany)
+  //val howMany = intToBytes(files.length)
+  //os.write(howMany)
+  sendInt(files.length)
   for file <- files do {
     os.write(intToBytes(file.length))
     os.write(stringToBytes(file))
