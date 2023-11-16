@@ -37,13 +37,15 @@ def getConfigFile(): List[String] = {
 }
 
 def getPassword(config: List[String]): String = {
-  val passline = findLine(config, "password=")
-  getLineSetting(passline)
+//   val passline = findLine(config, "password=")
+//   getLineSetting(passline)
+  getSetting(config, "password=")
 }
 
 def getStorageDirectory(config: List[String]): String = {
-  val dirline = findLine(config, "directory=")
-  val setting = getLineSetting(dirline)
+//   val dirline = findLine(config, "directory=")
+//   val setting = getLineSetting(dirline)
+  val setting = getSetting(config, "directory=")
   if setting == "\"\"" || setting == "" then
     "./"
   else if setting(setting.length-1) != '/' then
@@ -57,35 +59,63 @@ def getFileLimit(config: List[String], mode: String): Int = {
     mode match
       case "perfile" => "maxperfile="
       case "total" => "maxtotal="
-  val settingLine = findLine(config, settingName)
-  val strnum = getLineSetting(settingLine)
+//   val settingLine = findLine(config, settingName)
+//   val strnum = getLineSetting(settingLine)
+  val strnum = getSetting(config, settingName)
   try
     val num = strnum.toInt
     num
   catch
     case e: Exception => -1
 }
-
-private def getLineSetting(line: String): String = {
-  var copy = false
-  var setting = ""
-  for chr <- line do {
-    if copy == true then
-      setting += chr
-    else if chr == '=' then
-      copy = true
+//test this
+private def getSetting(config: List[String], seek: String): String = {
+  def findLine(i: Int = 0): String = {
+    if i >= config.length then
+      ""
+    else if config(i).contains(seek) == true then
+      config(i)
+    else
+      findLine(i+1)
   }
-  setting
+  def getLineSetting(line: String): String = {
+    var copy = false
+    var setting = ""
+    for chr <- line do {
+      if copy == true then
+        setting += chr
+      else if chr == '=' then
+        copy = true
+    }
+    setting
+  }
+  val settingline = findLine()
+  if settingline != "" then
+    getLineSetting(settingline)
+  else
+    ""
 }
 
-private def findLine(config: List[String], seekstr: String, i: Int = 0): String = {
-  if config(i).contains(seekstr) == true then
-    config(i)
-  else if i == config.length-1 then
-    ""
-  else
-    findLine(config, seekstr, i+1)
-}
+// private def getLineSetting(line: String): String = {
+//   var copy = false
+//   var setting = ""
+//   for chr <- line do {
+//     if copy == true then
+//       setting += chr
+//     else if chr == '=' then
+//       copy = true
+//   }
+//   setting
+// }
+//
+// private def findLine(config: List[String], seekstr: String, i: Int = 0): String = {
+//   if config(i).contains(seekstr) == true then
+//     config(i)
+//   else if i == config.length-1 then
+//     ""
+//   else
+//     findLine(config, seekstr, i+1)
+// }
 
 private def configToStringList(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] = {
   val chr = cfgBytes(i).toChar

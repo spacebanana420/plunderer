@@ -16,39 +16,37 @@ import scala.sys.exit
   while true do {
     clear()
     val mode = readUserInput(s"$cyan[Yakumo v0.9]\n$default--Choose an option--\n${green}0:${default} Exit            ${green}1:${default} Server            ${green}2:${default} Client\n${green}3:${default} Show config     ${green}4:${default} Show log\n")
-    if mode != "" then
-      userChoice(mode)
+    userChoice(mode)
   }
 }
 
 private def userChoice(mode: String) = {
-  val configOk = isConfigFine()
-  mode match
-    case "0" =>
-      exit()
-    case "1" =>
-      if configOk == true then
-        server(getPort())
-      else
-        printStatus("You need to have a properly configured config.txt file!\nCancelling server launch", true)
+  if "01234".contains(mode) == true && mode != "" then
+    mode match
+      case "0" =>
         exit()
-    case "2" =>
-      // val file = getFile()
-      val ip = getIP()
-      val port = getPort()
-      try
-        client(ip, port)
-      catch
-        case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
-    case "3" =>
-      showConfig(configOk)
-    case "4" =>
-      showLog()
-    case _ =>
-      exit()
+      case "1" =>
+        if isConfigFine() == true then
+          server(getPort())
+        else
+          printStatus("You need to have a properly configured config.txt file!\nCancelling server launch", true)
+          exit()
+      case "2" =>
+        // val file = getFile()
+        val ip = getIP()
+        val port = getPort()
+        try
+          client(ip, port)
+        catch
+          case e: Exception => readUserInput("Connection failed!\nMaybe the server isn't open?\n\nPress enter to continue")
+      case "3" =>
+        showConfig()
+      case "4" =>
+        showLog()
 }
 
-private def showConfig(isok: Boolean) = {
+private def showConfig() = {
+  val isok = isConfigFine()
   val config = getConfigFile()
   val maxperfile = getFileLimit(config, "perfile")
   val maxtotal = getFileLimit(config, "total")
