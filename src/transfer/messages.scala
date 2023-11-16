@@ -4,6 +4,8 @@ import yakumo.*
 import java.io.InputStream
 import java.io.OutputStream
 
+//This file contains functions so the server and client communicate with each other
+
 def readStatusByte(is: InputStream): Byte = {
   val status = new Array[Byte](1)
   is.read(status)
@@ -43,6 +45,7 @@ def sendMessage(message: String, os: OutputStream) = {
       case "getfiles" => Array[Byte](3)
       case "upload" => Array[Byte](4)
       case "download" => Array[Byte](5)
+      case "delete" => Array[Byte](6) //implement!!!
       case _ =>
         printStatus("Incorrect message sent!", true)
         Array[Byte](-1)
@@ -59,6 +62,7 @@ def receiveMessage(is: InputStream): String = {
     case 3 => "getfiles"
     case 4 => "upload"
     case 5 => "download"
+    case 6 => "delete" //implement!!!
     case _ =>
       printStatus("Incorrect message received!", true)
       "error"

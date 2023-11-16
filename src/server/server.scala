@@ -76,7 +76,7 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
   val fileLen = readLong(is)
 
   if isFileValid(fileLen, nameLen) == true then
-    println(s"\n--Downloading File--\nName: $name\nLength: $fileLen bytes\n")
+    println(s"\n--Downloading File--\n  * Name: $name\n  * Length: $fileLen bytes\n")
     writeLog(s"///Downloading $name\nLength: $fileLen bytes///")
     os.write(Array[Byte](1))
     download(is, name, fileLen, dir)
@@ -97,7 +97,7 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
       val len = File(files(chosen)).length()
       sendLong(len, os)
 
-      println(s"\n--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")
+      println(s"\n--Uploading File--\n  * Name: ${files(chosen)}\n  * Length: $len bytes")
       writeLog(s"Uploading ${files(chosen)}\nLength: $len bytes")
       upload(os, s"$dir${files(chosen)}")
       println(s"Finished uploading ${files(chosen)}!")

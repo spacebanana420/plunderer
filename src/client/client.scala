@@ -53,8 +53,8 @@ def clientDownload(is: InputStream, os: OutputStream) = {
       printStatus("You did not choose any file!", false)
     else
       var willdownload = ""
-      for file <- filenames do {
-        willdownload += s"$file\n"
+      for file <- filenums do {
+        willdownload += s"  * ${filenames(file)}\n"
       }
       println(s"The following files will be downloaded:\n$willdownload")
     for filenum <- filenums do {
@@ -62,7 +62,7 @@ def clientDownload(is: InputStream, os: OutputStream) = {
       sendInt(filenum, os)
       val len = readLong(is)
 
-      println(s"--Downloading File--\nName: ${filenames(filenum)}\nLength: $len bytes")
+      println(s"--Downloading File--\n  * Name: ${filenames(filenum)}\n  * Length: $len bytes")
       download(is, filenames(filenum), len, "./")
       println(s"Finished downloading ${filenames(filenum)}\n")
     }
@@ -83,7 +83,7 @@ def clientUpload(is: InputStream, os: OutputStream) = {
   sendLong(fileLen, os)
 
   if readStatusByte(is) == 1 then
-    println(s"--Uploading File--\nName: $name\nLength: $fileLen bytes")
+    println(s"--Uploading File--\n  * Name: $name\n  * Length: $fileLen bytes")
     upload(os, filepath)
     readUserInput(s"Finished uploading $name!\nPress enter to continue")
   else
