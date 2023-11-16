@@ -25,7 +25,7 @@ def server(port: Int = 42069) = {
     catch
       case e: Exception =>
         printStatus("The server has crashed or the client disconnected unexpectedly!", true)
-        writeLog("Server or connection crashed!")
+        writeLog("Server crashed or connection was interrupted!")
   }
   ss.close()
   writeLog(s"Server with port $port closed")
@@ -43,7 +43,6 @@ def serverSession(ss: ServerSocket) = {
   while is.available() == 0 do {
     Thread.sleep(250)
   }
-  //val inpass = bytesToString(readBytes(is.available(), is))
   val inpass = readString(is.available(), is)
   if inpass == password then
     println("Password is correct, proceeding")
@@ -72,11 +71,8 @@ def serverSession(ss: ServerSocket) = {
 }
 
 def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
-  //val nameLen = bytesToInt(readBytes(4, is))
   val nameLen = readInt(is)
-  //val name = bytesToString(readBytes(nameLen, is))
   val name = readString(nameLen, is)
-  //val fileLen = bytesToLong(readBytes(8, is))
   val fileLen = readLong(is)
 
   if isFileValid(fileLen, nameLen) == true then
@@ -97,10 +93,8 @@ def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
     printStatus("The server storage is empty, there is nothing to send to the client", false)
   else
     while readStatusByte(is) != 0 do {
-      //val chosen = bytesToInt(readBytes(4, is))
       val chosen = readInt(is)
       val len = File(files(chosen)).length()
-      //os.write(longToBytes(len))
       sendLong(len, os)
 
       println(s"\n--Uploading File--\nName: ${files(chosen)}\nLength: $len bytes")

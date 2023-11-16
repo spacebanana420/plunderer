@@ -18,9 +18,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
   val is = sock.getInputStream()
   println("Connection established to server")
 
-  //val password = stringToBytes(readUserInput("Input connection password:"))
   sendString(readUserInput("Input connection password:"), os)
-  //os.write(password)
 
   if readStatusByte(is) == 1 then
     val green = foreground("green")
@@ -46,13 +44,10 @@ def client(host: String = "localhost", port: Int = 42069) = {
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = {
-  //val howMany = bytesToInt(readBytes(4, is))
   val howMany = readInt(is)
   if howMany != 0 then
     val filenames = receiveServerFileInfo(is, howMany)
     val filenums = chooseServerFile(filenames, howMany, is)
-//     val choice = chooseServerFile(filenames) //put these all together
-//     val filenums = linesToNumbers(separateStringLines(choice), filenames.length-1) //needs testing
 
     if filenums.length == 0 then
       printStatus("You did not choose any file!", false)
@@ -64,9 +59,7 @@ def clientDownload(is: InputStream, os: OutputStream) = {
       println(s"The following files will be downloaded:\n$willdownload")
     for filenum <- filenums do {
       os.write(Array[Byte](1))
-      //os.write(intToBytes(filenum))
       sendInt(filenum, os)
-      //val len = bytesToLong(readBytes(8, is))
       val len = readLong(is)
 
       println(s"--Downloading File--\nName: ${filenames(filenum)}\nLength: $len bytes")
@@ -85,9 +78,6 @@ def clientUpload(is: InputStream, os: OutputStream) = {
   val nameLen = name.length
   val fileLen = File(filepath).length()
 
-  //os.write(intToBytes(nameLen))
-  //os.write(stringToBytes(name))
-  //os.write(longToBytes(fileLen))
   sendInt(nameLen, os)
   sendString(name, os)
   sendLong(fileLen, os)

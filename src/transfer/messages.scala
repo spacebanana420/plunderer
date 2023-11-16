@@ -16,7 +16,7 @@ def readBytes(len: Int, is: InputStream): Array[Byte] = {
   bytes
 }
 
-//test these muthafuckas
+//tested them, everything seems to be fine
 def readShort(is: InputStream): Short = bytesToShort(readBytes(2, is))
 
 def readInt(is: InputStream): Int = bytesToInt(readBytes(4, is))
@@ -43,7 +43,9 @@ def sendMessage(message: String, os: OutputStream) = {
       case "getfiles" => Array[Byte](3)
       case "upload" => Array[Byte](4)
       case "download" => Array[Byte](5)
-      case _ => Array[Byte](-1)
+      case _ =>
+        sendStatus("Incorrect message sent!", true)
+        Array[Byte](-1)
   os.write(bytes)
 }
 
@@ -57,5 +59,7 @@ def receiveMessage(is: InputStream): String = {
     case 3 => "getfiles"
     case 4 => "upload"
     case 5 => "download"
-    case _ => "error"
+    case _ =>
+      sendStatus("Incorrect message received!", true)
+      "error"
 }
