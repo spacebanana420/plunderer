@@ -43,7 +43,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
   //sock.close()
 }
 
-def clientDownload(is: InputStream, os: OutputStream) = {
+def clientDownload(is: InputStream, os: OutputStream) = { //add multi file support for upload too
   val howMany = readInt(is)
   if howMany != 0 then
     val filenames = receiveServerFileInfo(is, howMany)

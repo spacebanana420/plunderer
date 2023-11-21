@@ -14,8 +14,8 @@ import scala.sys.exit
     createConfig()
   val configOk = isConfigFine()
   while true do {
-    clear()
-    val mode = readUserInput(s"$cyan[Yakumo v0.8.1]\n$default--Choose an option--\n${green}0:${default} Exit            ${green}1:${default} Server            ${green}2:${default} Client\n${green}3:${default} Show config     ${green}4:${default} Show log\n")
+    //clear()
+    val mode = readUserInputSpawn(s"$cyan[Yakumo v0.9]\n$default--Choose an option--\n${green}0:${default} Exit            ${green}1:${default} Server            ${green}2:${default} Client\n${green}3:${default} Show config     ${green}4:${default} Show log\n")
     userChoice(mode)
   }
 }
@@ -71,7 +71,9 @@ private def getPort(): Int = {
   try
     portstr.toInt
   catch
-    case e: Exception => 42069
+    case e: Exception =>
+      println("Incorrect port! Defaulting to 42069")
+      42069
 }
 
 // def getFile(): Array[String] = {

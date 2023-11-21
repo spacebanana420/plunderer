@@ -6,7 +6,7 @@ It supports bi-directional file transfer, as well as server security configurati
 # Download & how to use
 
 ## Supported platforms
-Yakumo is cross-platform and very portable. It is expected to work all operating systems with Scala/Java support.
+Yakumo is designed to be platform-agnostic, and so it is cross-platform and very portable. It is expected to work all desktop/server operating systems with Scala/Java support.
 
 Although cross-platform support is very good, Yakumo is only officially tested for these systems:
 * Linux-based
@@ -20,7 +20,7 @@ Grab the program from the [releases](https://github.com/spacebanana420/yakumo/re
 ## Requirements
 * Scala (recommended version 3.0 or above)
 
-I am not distributing jars that include the whole runtime, that's why Scala is specifically necessary.
+I am not distributing jars that include the whole Scala runtime, that's why Scala is specifically necessary.
 
 ## How to use
 Launch the jar program with ```scala yakumo.jar```. You will be prompted to choose if you want to open a server or connect to one using the built-in client.
@@ -46,3 +46,6 @@ Type the password so the server accepts your connection. Your file will be uploa
 You require Scala 3.0 or higher
 
 Open a terminal in the root of the project and type ```scalac src/*.scala src/*/*.scala -d yakumo.jar``` or, if you have Bash on your system, just run build.sh: ```bash build.sh```
+
+### NixOS environment
+If you are using NixOS, you can install my developer environment by running ```nix-shell``` on the root directory of the project.

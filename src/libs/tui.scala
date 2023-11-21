@@ -13,7 +13,7 @@ def readUserInput(message: String = ""): String = {
 
 def readUserInputSpawn(message: String = ""): String = {
   if message != "" then
-    print(s"\u001B[H\u001B[2J$message")
+    print(s"\u001B[1J\u001B[H$message")
   scala.io.StdIn.readLine()
 }
 

@@ -6,43 +6,77 @@ import scala.io.StdIn.readLine
 import scala.sys.exit
 
 def browse(): String = {
-  var chosenpath = File("").getAbsolutePath()
-  var chosenfile = ""
-  while chosenfile == "" do {
-    if File(chosenpath).isFile == false then
-      chosenpath = browseLoop(chosenpath)
+//   def browser_getpath(paths: Array[Array[String]], answer: Int): String = {
+//
+//   }
+  def browseLoop(basedir: String): String = {
+    val paths = fileBrowser(basedir)
+    val answer = readLine()
+    if browserCommand(answer, basedir) == true then
+      browseLoop(basedir)
+    else if answer != "0" then
+      try
+        val answernum = answer.toInt
+        if answernum == 1 then
+          browseLoop(getParentPath(basedir))
+        else if answernum - 2 <= paths(0).length-1 then
+          browseLoop(s"${basedir}/${paths(0)(answernum - 2)}")
+        else if answernum - 2 - paths(0).length <= paths(1).length-1 then
+          s"${basedir}/${paths(1)(answernum - 2 - paths(0).length)}"
+        else
+          browseLoop(basedir)
+      catch
+        case e: Exception => browseLoop(basedir)
     else
-      chosenfile = chosenpath
+      println("Closing client...") //maybe add message for server to shut down??
+      exit() //replace with only exiting the download mode
   }
+
+  val chosenfile = browseLoop(File("").getAbsolutePath())
   println(s"Selected ${chosenfile}")
   chosenfile
 }
 
-def browseLoop(basedir: String): String = {
-  clear()
-  val paths = fileBrowser(basedir)
-  val answer = readLine()
-  if answer != "0" then
-    try
-      val answernum = answer.toInt
-      val chosenpath = //needs fix
-        if answernum == 1 then
-          getParentPath(basedir)
-        else if answernum - 2 <= paths(0).length-1 then
-          s"${basedir}/${paths(0)(answernum - 2)}"
-        else if answernum - 2 - paths(0).length <= paths(1).length-1 then
-          s"${basedir}/${paths(1)(answernum - 2 - paths(0).length)}"
-        else
-          basedir
-      chosenpath
-    catch
-      case e: Exception => basedir
-  else
-    println("Closing client...") //maybe add message for server to shut down??
-    exit()
-}
+// def browse(): String = {
+//   var chosenpath = File("").getAbsolutePath()
+//   var chosenfile = ""
+//   while chosenfile == "" do { //maybe it can be immutable
+//     if File(chosenpath).isFile == false then
+//       chosenpath = browseLoop(chosenpath)
+//     else
+//       chosenfile = chosenpath
+//   }
+//   println(s"Selected ${chosenfile}")
+//   chosenfile
+// }
+//
+// def browseLoop(basedir: String): String = {
+//   clear()
+//   val paths = fileBrowser(basedir)
+//   val answer = readLine()
+//   val isCommand = browserCommand(answer, basedir)
+//   if answer != "0" then
+//     try
+//       val answernum = answer.toInt
+//       val chosenpath = //needs fix
+//         if answernum == 1 then
+//           getParentPath(basedir)
+//         else if answernum - 2 <= paths(0).length-1 then
+//           s"${basedir}/${paths(0)(answernum - 2)}"
+//         else if answernum - 2 - paths(0).length <= paths(1).length-1 then
+//           s"${basedir}/${paths(1)(answernum - 2 - paths(0).length)}"
+//         else
+//           basedir
+//       chosenpath
+//     catch
+//       case e: Exception => basedir
+//   else
+//     println("Closing client...") //maybe add message for server to shut down??
+//     exit()
+// }
 
 def fileBrowser(basedir: String): Array[Array[String]] = {
+  clear()
   val green = foreground("green")
   val red = foreground("red")
   val default = foreground("default")
@@ -75,7 +109,49 @@ def fileBrowser(basedir: String): Array[Array[String]] = {
       pathsAdded = 0
     pathNum += 1
   }
-  browserScreen ++= "\nPick a file to send or navigate through the filesystem"
+  browserScreen ++= "\nPick a file to send or navigate through the filesystem\nType \"help\" to see the list of commands"
   println(browserScreen)
   Array(dirs, files)
+}
+
+
+def browser_seek(basedir: String, seek: String) = {
+  clear()
+  val green = foreground("green")
+  val red = foreground("red")
+  val default = foreground("default")
+  val linewidth = 2
+
+  var browserScreen = s"$basedir\n\n---Directories---\n"
+  //val paths = getPaths(basedir).filter(x => x.contains(seek) == true)
+  val paths = getPaths(basedir)
+
+  val dirs = paths.filter(x => File(s"${basedir}/${x}").isFile() == false)
+  val files = paths.filter(x => File(s"${basedir}/${x}").isFile() == true)
+  var pathsAdded = 0
+  var pathNum = 2
+  for dir <- dirs do {
+    if dir.contains(seek) == true then
+      if pathsAdded < linewidth then
+        browserScreen ++= s"$green${pathNum}:$default ${dir}     "
+        pathsAdded += 1
+      else
+        browserScreen ++= s"$green${pathNum}:$default ${dir}\n"
+        pathsAdded = 0
+    pathNum += 1
+  }
+  pathsAdded = 0
+  browserScreen ++= "\n---Files---\n"
+  for file <- files do {
+    if file.contains(seek) == true then
+      if pathsAdded < linewidth then
+        browserScreen ++= s"$green${pathNum}:$default ${file}     "
+        pathsAdded += 1
+      else
+        browserScreen ++= s"$green${pathNum}:$default ${file}\n"
+        pathsAdded = 0
+    pathNum += 1
+  }
+  browserScreen ++= "\nThe following entries were found\nPress enter to continue"
+  readUserInput(browserScreen)
 }
