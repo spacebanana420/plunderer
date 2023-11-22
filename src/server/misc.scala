@@ -6,16 +6,16 @@ import java.io.File
 import java.io.OutputStream
 
 
-def sendServerFileInfo(os: OutputStream, dir: String): Array[String] = {
+def sendServerFileInfo(os: OutputStream, dir: String) = {
   val files = File(dir).list().filter(x => File(x).isFile == true)
   //val howMany = intToBytes(files.length)
   //os.write(howMany)
   sendInt(files.length, os)
-  for file <- files do {
-    os.write(intToBytes(file.length))
-    os.write(stringToBytes(file))
-  }
-  files
+  for file <- files do
+    //os.write(intToBytes(file.length))
+    //os.write(stringToBytes(file))
+    sendInt(file.length, os)
+    sendString(file, os)
 }
 
 def isFileValid(len: Long, namelen: Int): Boolean = {

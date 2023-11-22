@@ -38,6 +38,28 @@ def serverSession(ss: ServerSocket) = {
   val config = getConfigFile()
   val password = getPassword(config)
   val dir = getStorageDirectory(config)
+
+  def server_listen(): Unit = {
+    val msg = receiveMessage(is)
+    if msg != "close" then
+      msg match
+        case "getfiles" =>
+          val log = "Client requested storage information"
+          println(log); writeLog(log)
+          sendServerFileInfo(os, dir)
+        case "upload" =>
+          val log = "Client requested file upload"
+          println(log); writeLog(log)
+          serverDownload(is, os, dir)
+        case "download" =>
+          val log = "Client requested file download"
+          println(log); writeLog(log)
+          serverUpload(is, os, dir)
+        case "delete" => //implement!!!
+//         case _ =>
+//           printStatus("Incorrect message sent!", true)
+      server_listen()
+  }
   println("Connection established with client, waiting for password input")
 
   while is.available() == 0 do {
@@ -45,30 +67,54 @@ def serverSession(ss: ServerSocket) = {
   }
   val inpass = readString(is.available(), is)
   if inpass == password then
-    println("Password is correct, proceeding")
+    val log = "Password is correct, proceeding"
+    println(log); writeLog(log)
     os.write(Array[Byte](1))
-
-    var closeServer = false
-    while closeServer == false do {
-      val clientRequest = readStatusByte(is)
-      if clientRequest == 1 then
-        println("Client requested file download")
-        writeLog("Client established connection, password is correct, requested file download")
-        serverUpload(is, os, dir)
-      else if clientRequest == 2 then
-        println("Client requested file upload")
-        writeLog("Client established connection, password is correct, requested file upload")
-        serverDownload(is, os, dir)
-      else
-        closeServer = true
-        println("Client ended connection")
-    }
+    server_listen()
   else
-    printStatus("Incorrect password received", false)
-    writeLog("Client established connection, password is incorrect")
+    val log = "Incorrect password received"
+    printStatus(log, false); writeLog(log)
     os.write(Array[Byte](0))
   sock.close()
 }
+
+// def serverSession(ss: ServerSocket) = {
+//   val sock = ss.accept()
+//   val is = sock.getInputStream()
+//   val os = sock.getOutputStream()
+//   val config = getConfigFile()
+//   val password = getPassword(config)
+//   val dir = getStorageDirectory(config)
+//   println("Connection established with client, waiting for password input")
+//
+//   while is.available() == 0 do {
+//     Thread.sleep(250)
+//   }
+//   val inpass = readString(is.available(), is)
+//   if inpass == password then
+//     println("Password is correct, proceeding")
+//     os.write(Array[Byte](1))
+//
+//     var closeServer = false
+//     while closeServer == false do {
+//       val clientRequest = readStatusByte(is)
+//       if clientRequest == 1 then
+//
+//         serverUpload(is, os, dir)
+//       else if clientRequest == 2 then
+//         println("Client requested file upload")
+//         writeLog("Client established connection, password is correct, requested file upload")
+//         serverDownload(is, os, dir)
+//       else
+//         closeServer = true
+//         println("Client ended connection")
+//     }
+//   else
+//     printStatus("Incorrect password received", false)
+//     writeLog("Client established connection, password is incorrect")
+//     os.write(Array[Byte](0))
+//   sock.close()
+// }
 
 def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
   val nameLen = readInt(is)
@@ -87,19 +133,17 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
 }
 
 def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
-  val files = sendServerFileInfo(os, dir)
-  println("Sending storage information")
+  //val files = sendServerFileInfo(os, dir)
+  val files = File(dir).list().filter(x => File(x).isFile == true)
   if files.length == 0 then
     printStatus("The server storage is empty, there is nothing to send to the client", false)
   else
-    while readStatusByte(is) != 0 do {
-      val chosen = readInt(is)
-      val len = File(files(chosen)).length()
-      sendLong(len, os)
+    val chosen = readInt(is)
+    val len = File(files(chosen)).length() //can crash the connection!
+    sendLong(len, os)
 
-      println(s"\n--Uploading File--\n  * Name: ${files(chosen)}\n  * Length: $len bytes")
-      writeLog(s"Uploading ${files(chosen)}\nLength: $len bytes")
-      upload(os, s"$dir${files(chosen)}")
-      println(s"Finished uploading ${files(chosen)}!")
-    }
+    println(s"\n--Uploading File--\n  * Name: ${files(chosen)}\n  * Length: $len bytes")
+    writeLog(s"Uploading ${files(chosen)}\nLength: $len bytes")
+    upload(os, s"$dir${files(chosen)}")
+    println(s"Finished uploading ${files(chosen)}!")
 }

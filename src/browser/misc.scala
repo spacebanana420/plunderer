@@ -1,4 +1,5 @@
-package yakumo
+package yakumo.browser
+import yakumo.*
 
 import java.io.File
 import scala.sys.process.*

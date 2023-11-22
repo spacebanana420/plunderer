@@ -29,12 +29,14 @@ def client(host: String = "localhost", port: Int = 42069) = {
     while closeClient == false do {
       val mode = readUserInput(s"${green}0:${default} Exit   ${green}1:${default} Download   ${green}2:${default} Upload\nChoose a mode")
       if mode == "1" then
+        os.write(Array[Byte](1))
         clientDownload(is, os)
       else if mode == "2" then
+        os.write(Array[Byte](2))
         clientUpload(is, os)
       else
         closeClient = true
-        sendMessage("close", os)
+        os.write(Array[Byte](0))
         println("Closing connection with server")
     }
   else
@@ -43,18 +45,21 @@ def client(host: String = "localhost", port: Int = 42069) = {
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = { //add multi file support for upload too
-  //val howMany = readInt(is)
-  sendMessage("getfiles", os)
-  val filenames = receiveServerFileInfo(is)
-  if filenames.length != 0 then
-    val filenums = chooseServerFile(filenames, is)
-    var willdownload = ""
-    for file <- filenums do {
-      willdownload += s"  * ${filenames(file)}\n"
-    }
-    println(s"The following files will be downloaded:\n$willdownload")
+  val howMany = readInt(is)
+  if howMany != 0 then
+    val filenames = receiveServerFileInfo(is, howMany)
+    val filenums = chooseServerFile(filenames, howMany, is)
+
+    if filenums.length == 0 then
+      printStatus("You did not choose any file!", false)
+    else
+      var willdownload = ""
+      for file <- filenums do {
+        willdownload += s"  * ${filenames(file)}\n"
+      }
+      println(s"The following files will be downloaded:\n$willdownload")
     for filenum <- filenums do {
-      sendMessage("download", os)
+      os.write(Array[Byte](1))
       sendInt(filenum, os)
       val len = readLong(is)
 
@@ -62,7 +67,7 @@ def clientDownload(is: InputStream, os: OutputStream) = { //add multi file suppo
       download(is, filenames(filenum), len, "./")
       println(s"Finished downloading ${filenames(filenum)}\n")
     }
-    //os.write(Array[Byte](0)) //wrap these god damn shits
+    os.write(Array[Byte](0)) //wrap these god damn shits
     readUserInput("Press enter to continue")
   else
     printStatus("The server's storage is empty!\nThere's nothing to download", true)
@@ -74,7 +79,6 @@ def clientUpload(is: InputStream, os: OutputStream) = {
   val nameLen = name.length
   val fileLen = File(filepath).length()
 
-  sendMessage("upload", os)
   sendInt(nameLen, os)
   sendString(name, os)
   sendLong(fileLen, os)

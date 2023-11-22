@@ -1,21 +1,25 @@
 package yakumo.client
+import yakumo.browser.*
 import yakumo.*
 import yakumo.transfer.*
 
 import java.io.InputStream
 
-def receiveServerFileInfo(is: InputStream, howMany: Int, i: Int = 1, filenames: List[String] = List[String]()): List[String] = {
-  if i <= howMany then
+def receiveServerFileInfo(is: InputStream, howMany: Int = 0, i: Int = -1, filenames: List[String] = List[String]()): List[String] = {
+  if i == -1 then
+    val howMany = readInt(is)
+    receiveServerFileInfo(is, howMany, 0, filenames)
+  else if i >= howMany then
+    filenames
+  else
     //val len = bytesToInt(readBytes(4, is))
-    val len = readInt(is)
     //val name = bytesToString(readBytes(len, is))
+    val len = readInt(is)
     val name = readString(len, is)
     receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
-  else
-    filenames
 }
 
-def chooseServerFile(files: List[String], howMany: Int, is: InputStream): List[Int] = { //what if you choose each at a time instead
+def chooseServerFile(files: List[String], is: InputStream): List[Int] = { //what if you choose each at a time instead
   def separateStringLines(str: String, line: String = "", lines: List[String] = List(), i: Int = 0): List[String] = {
     if i == str.length then
       lines :+ line
