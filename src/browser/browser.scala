@@ -29,12 +29,12 @@ def browse(): String = {
       catch
         case e: Exception => browseLoop(basedir)
     else
-      println("Closing client...") //maybe add message for server to shut down??
-      exit() //replace with only exiting the download mode
+      "!cancelled!" //replace with only exiting the download mode
   }
 
   val chosenfile = browseLoop(File("").getAbsolutePath())
-  println(s"Selected ${chosenfile}")
+  if chosenfile != "!cancelled!" then
+    println(s"Selected ${chosenfile}")
   chosenfile
 }
 

@@ -72,7 +72,6 @@ private def getPort(): Int = {
     portstr.toInt
   catch
     case e: Exception =>
-      println("Incorrect port! Defaulting to 42069")
       42069
 }
 

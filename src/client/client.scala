@@ -27,6 +27,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
     println("Password is correct, connection accepted\n")
     var closeClient = false
     while closeClient == false do {
+      clear()
       val mode = readUserInput(s"${green}0:${default} Exit   ${green}1:${default} Download   ${green}2:${default} Upload\nChoose a mode")
       if mode == "1" then
         clientDownload(is, os)
@@ -70,20 +71,21 @@ def clientDownload(is: InputStream, os: OutputStream) = { //add multi file suppo
 
 def clientUpload(is: InputStream, os: OutputStream) = {
   val filepath = browse()
-  val name = getRelativePath(filepath)
-  val nameLen = name.length
-  val fileLen = File(filepath).length()
+  if filepath != "!cancelled!" then //implement something better maybe
+    val name = getRelativePath(filepath)
+    val nameLen = name.length
+    val fileLen = File(filepath).length()
 
-  sendMessage("upload", os)
-  sendInt(nameLen, os)
-  sendString(name, os)
-  sendLong(fileLen, os)
+    sendMessage("upload", os)
+    sendInt(nameLen, os)
+    sendString(name, os)
+    sendLong(fileLen, os)
 
-  if readStatusByte(is) == 1 then
-    println(s"--Uploading File--\n  * Name: $name\n  * Length: $fileLen bytes")
-    upload(os, filepath)
-    readUserInput(s"Finished uploading $name!\nPress enter to continue")
-  else
-    printStatus("Connection refused\nFile exceeds the server's configured limit or filename is empty", true)
+    if readStatusByte(is) == 1 then
+      println(s"--Uploading File--\n  * Name: $name\n  * Length: $fileLen bytes")
+      upload(os, filepath)
+      readUserInput(s"Finished uploading $name!\nPress enter to continue")
+    else
+      printStatus("Connection refused\nFile exceeds the server's configured limit or filename is empty", true)
 }
 

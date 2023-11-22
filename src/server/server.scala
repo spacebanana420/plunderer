@@ -11,7 +11,7 @@ import java.io.File
 //This file includes the code exclusive to the server
 
 def server(port: Int = 42069) = {
-  println(s"Opened server with port $port\nWaiting for incoming requests...")
+  println(s"Opened server with port ${foreground("green")}$port${foreground("default")}\nWaiting for incoming requests...")
   writeLog(s"///Opened server with port $port///")
   val ss = ServerSocket(port)
   //var closeServer = false
