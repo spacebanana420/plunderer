@@ -20,7 +20,7 @@ def browse(): String = {
         val answernum = answer.toInt
         if answernum == 1 then
           browseLoop(getParentPath(basedir))
-        else if answernum - 2 <= paths(0).length-1 then
+        else if answernum - 2 <= paths(0).length-1 then //maybe just check if its a file or not
           browseLoop(s"${basedir}/${paths(0)(answernum - 2)}")
         else if answernum - 2 - paths(0).length <= paths(1).length-1 then
           s"${basedir}/${paths(1)(answernum - 2 - paths(0).length)}"
@@ -38,121 +38,111 @@ def browse(): String = {
   chosenfile
 }
 
-// def browse(): String = {
-//   var chosenpath = File("").getAbsolutePath()
-//   var chosenfile = ""
-//   while chosenfile == "" do { //maybe it can be immutable
-//     if File(chosenpath).isFile == false then
-//       chosenpath = browseLoop(chosenpath)
-//     else
-//       chosenfile = chosenpath
-//   }
-//   println(s"Selected ${chosenfile}")
-//   chosenfile
-// }
-//
-// def browseLoop(basedir: String): String = {
-//   clear()
-//   val paths = fileBrowser(basedir)
-//   val answer = readLine()
-//   val isCommand = browserCommand(answer, basedir)
-//   if answer != "0" then
-//     try
-//       val answernum = answer.toInt
-//       val chosenpath = //needs fix
-//         if answernum == 1 then
-//           getParentPath(basedir)
-//         else if answernum - 2 <= paths(0).length-1 then
-//           s"${basedir}/${paths(0)(answernum - 2)}"
-//         else if answernum - 2 - paths(0).length <= paths(1).length-1 then
-//           s"${basedir}/${paths(1)(answernum - 2 - paths(0).length)}"
-//         else
-//           basedir
-//       chosenpath
-//     catch
-//       case e: Exception => basedir
-//   else
-//     println("Closing client...") //maybe add message for server to shut down??
-//     exit()
-// }
 
-def fileBrowser(basedir: String): Array[Array[String]] = {
-  clear()
+def fileBrowser(basedir: String): Array[Array[String]] = { //test
   val green = foreground("green")
   val red = foreground("red")
   val default = foreground("default")
-  val linewidth = 2
 
-  var browserScreen = s"$basedir\n\n${red}0:$default Exit   ${green}1:$default Go back\n\n---Directories---\n"
+  def addtoscreen(elements: Array[String], pathNum: Int, screen: String = "", i: Int = 0, added: Int = 0): String = {
+    if i >= elements.length then
+      screen
+    else if added < 2 then
+      val newstr = s"$green${pathNum}:$default ${elements(i)}       "
+      addtoscreen(elements, pathNum + 1, screen + newstr, i+1, added+1)
+    else
+      val newstr = s"$green${pathNum}:$default ${elements(i)}\n"
+      addtoscreen(elements, pathNum + 1, screen + newstr, i+1, 0)
+  }
+
   val paths = getPaths(basedir)
-
   val dirs = paths.filter(x => File(s"${basedir}/${x}").isFile() == false)
   val files = paths.filter(x => File(s"${basedir}/${x}").isFile() == true)
-  var pathsAdded = 0
-  var pathNum = 2
-  for dir <- dirs do {
-    if pathsAdded < linewidth then
-      browserScreen ++= s"$green${pathNum}:$default ${dir}     "
-      pathsAdded += 1
-    else
-      browserScreen ++= s"$green${pathNum}:$default ${dir}\n"
-      pathsAdded = 0
-    pathNum += 1
-  }
-  pathsAdded = 0
-  browserScreen ++= "\n---Files---\n"
-  for file <- files do {
-    if pathsAdded < linewidth then
-      browserScreen ++= s"$green${pathNum}:$default ${file}     "
-      pathsAdded += 1
-    else
-      browserScreen ++= s"$green${pathNum}:$default ${file}\n"
-      pathsAdded = 0
-    pathNum += 1
-  }
-  browserScreen ++= "\nPick a file to send or navigate through the filesystem\nType \"help\" to see the list of commands"
+
+  val browserScreen =
+    s"$basedir\n\n${red}0:$default Exit   ${green}1:$default Go back\n\n---Directories---\n"
+    + addtoscreen(dirs, 2)
+    + "\n---Files---\n"
+    + addtoscreen(files, 2 + dirs.length)
+    + "\nPick a file to send or navigate through the filesystem\nType \"help\" to see the list of commands"
+
+  clear()
   println(browserScreen)
   Array(dirs, files)
 }
 
-
-def browser_seek(basedir: String, seek: String) = {
-  clear()
+def browser_seek(basedir: String, seek: String) = { //test
   val green = foreground("green")
   val red = foreground("red")
   val default = foreground("default")
-  val linewidth = 2
 
-  var browserScreen = s"$basedir\n\n---Directories---\n"
-  //val paths = getPaths(basedir).filter(x => x.contains(seek) == true)
+  def addtoscreen(elements: Array[String], pathNum: Int, screen: String = "", i: Int = 0, added: Int = 0): String = {
+    if i >= elements.length then
+      screen
+    else if elements(i).contains(seek) == true then
+      if added < 2 then
+        val newstr = s"$green${pathNum}:$default ${elements(i)}       "
+        addtoscreen(elements, pathNum + 1, screen + newstr, i+1, added+1)
+      else
+        val newstr = s"$green${pathNum}:$default ${elements(i)}\n"
+        addtoscreen(elements, pathNum + 1, screen + newstr, i+1, 0)
+    else
+        addtoscreen(elements, pathNum + 1, screen, i+1, added)
+  }
+
   val paths = getPaths(basedir)
-
   val dirs = paths.filter(x => File(s"${basedir}/${x}").isFile() == false)
   val files = paths.filter(x => File(s"${basedir}/${x}").isFile() == true)
-  var pathsAdded = 0
-  var pathNum = 2
-  for dir <- dirs do {
-    if dir.contains(seek) == true then
-      if pathsAdded < linewidth then
-        browserScreen ++= s"$green${pathNum}:$default ${dir}     "
-        pathsAdded += 1
-      else
-        browserScreen ++= s"$green${pathNum}:$default ${dir}\n"
-        pathsAdded = 0
-    pathNum += 1
-  }
-  pathsAdded = 0
-  browserScreen ++= "\n---Files---\n"
-  for file <- files do {
-    if file.contains(seek) == true then
-      if pathsAdded < linewidth then
-        browserScreen ++= s"$green${pathNum}:$default ${file}     "
-        pathsAdded += 1
-      else
-        browserScreen ++= s"$green${pathNum}:$default ${file}\n"
-        pathsAdded = 0
-    pathNum += 1
-  }
-  browserScreen ++= "\nThe following entries were found\nPress enter to continue"
+
+  val browserScreen =
+    s"$basedir\n\n---Directories---\n"
+    + addtoscreen(dirs, 2)
+    + "\n---Files---\n"
+    + addtoscreen(files, 2 + dirs.length)
+    + "\nThe following entries were found\nPress enter to continue"
+
+  clear()
   readUserInput(browserScreen)
 }
+
+
+// def browser_seek(basedir: String, seek: String) = {
+//   clear()
+//   val green = foreground("green")
+//   val red = foreground("red")
+//   val default = foreground("default")
+//   val linewidth = 2
+//
+//   var browserScreen = s"$basedir\n\n---Directories---\n"
+//   //val paths = getPaths(basedir).filter(x => x.contains(seek) == true)
+//   val paths = getPaths(basedir)
+//
+//   val dirs = paths.filter(x => File(s"${basedir}/${x}").isFile() == false)
+//   val files = paths.filter(x => File(s"${basedir}/${x}").isFile() == true)
+//   var pathsAdded = 0
+//   var pathNum = 2
+//   for dir <- dirs do {
+//     if dir.contains(seek) == true then
+//       if pathsAdded < linewidth then
+//         browserScreen ++= s"$green${pathNum}:$default ${dir}       "
+//         pathsAdded += 1
+//       else
+//         browserScreen ++= s"$green${pathNum}:$default ${dir}\n"
+//         pathsAdded = 0
+//     pathNum += 1
+//   }
+//   pathsAdded = 0
+//   browserScreen ++= "\n---Files---\n"
+//   for file <- files do {
+//     if file.contains(seek) == true then
+//       if pathsAdded < linewidth then
+//         browserScreen ++= s"$green${pathNum}:$default ${file}       "
+//         pathsAdded += 1
+//       else
+//         browserScreen ++= s"$green${pathNum}:$default ${file}\n"
+//         pathsAdded = 0
+//     pathNum += 1
+//   }
+//   browserScreen ++= "\nThe following entries were found\nPress enter to continue"
+//   readUserInput(browserScreen)
+// }

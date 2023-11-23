@@ -26,6 +26,7 @@ def isConfigFine(): Boolean = {
     false
 }
 
+
 def getConfigFile(): List[String] = {
   val file = new FileInputStream("config.txt")
   val bytes = new Array[Byte](file.available())

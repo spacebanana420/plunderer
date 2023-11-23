@@ -20,7 +20,7 @@ def server(port: Int = 42069) = {
       println("---Opening new connection---\n")
       writeLog("Server is awating connection")
       serverSession(ss)
-      println("---Closing connection---")
+      println("Closing connection")
       writeLog("Server closed connection")
     catch
       case e: Exception =>
@@ -77,44 +77,6 @@ def serverSession(ss: ServerSocket) = {
     os.write(Array[Byte](0))
   sock.close()
 }
-
-// def serverSession(ss: ServerSocket) = {
-//   val sock = ss.accept()
-//   val is = sock.getInputStream()
-//   val os = sock.getOutputStream()
-//   val config = getConfigFile()
-//   val password = getPassword(config)
-//   val dir = getStorageDirectory(config)
-//   println("Connection established with client, waiting for password input")
-//
-//   while is.available() == 0 do {
-//     Thread.sleep(250)
-//   }
-//   val inpass = readString(is.available(), is)
-//   if inpass == password then
-//     println("Password is correct, proceeding")
-//     os.write(Array[Byte](1))
-//
-//     var closeServer = false
-//     while closeServer == false do {
-//       val clientRequest = readStatusByte(is)
-//       if clientRequest == 1 then
-//
-//         serverUpload(is, os, dir)
-//       else if clientRequest == 2 then
-//         println("Client requested file upload")
-//         writeLog("Client established connection, password is correct, requested file upload")
-//         serverDownload(is, os, dir)
-//       else
-//         closeServer = true
-//         println("Client ended connection")
-//     }
-//   else
-//     printStatus("Incorrect password received", false)
-//     writeLog("Client established connection, password is incorrect")
-//     os.write(Array[Byte](0))
-//   sock.close()
-// }
 
 def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
   val nameLen = readInt(is)

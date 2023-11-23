@@ -28,7 +28,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
     var closeClient = false
     while closeClient == false do {
       clear()
-      val mode = readUserInput(s"${green}0:${default} Exit   ${green}1:${default} Download   ${green}2:${default} Upload\nChoose a mode")
+      val mode = readUserInput(s"${green}IP:${default} $host   ${green}Port:${default} $port\n\n${green}0:${default} Exit   ${green}1:${default} Download   ${green}2:${default} Upload\nChoose a mode")
       if mode == "1" then
         clientDownload(is, os)
       else if mode == "2" then
