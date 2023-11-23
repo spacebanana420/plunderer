@@ -29,10 +29,11 @@ Launch the jar program with ```scala yakumo.jar```. You will be prompted to choo
 The server requires a port, and defaults to ```42069```.
 
 If it doesn't exist, a config.txt file will be created where the program exists. This configuration file is necessary and contains the following options:
+
 * ```password```: The password for your server connections. Default is ```test123```, and you should change it to something secure of course.
 * ```directory```: The storage directory for the server. Default is ".", which corresponds to where yakumo.jar is.
-* ```maxperfile```: The maximum allowed file size per file, in gigabytes.
-* ```maxtotal```: The maximum allowed size for the sum of all the file sizes in the directory. This is unused for now.
+* ```maxperfile```: The maximum allowed file size per file, in gigabytes. The server will ignore files that are bigger than this.
+* ```maxtotal```: The maximum storage limit of the server, in gigabytes. The server will ignore all file uploads if it's full
 
 ### Client
 
@@ -43,9 +44,18 @@ When you open the client, a file browser opens, where you can select the file yo
 Type the password so the server accepts your connection. Your file will be uploaded to the server if the password is correct, the server's directory isn't full and your file doesn't exceed the server's size limit.
 
 # Building from source
-You require Scala 3.0 or higher
+You require [Scala 3.0](https://scala-lang.org) or higher to build Yakumo
 
-Open a terminal in the root of the project and type ```scalac src/*.scala src/*/*.scala -d yakumo.jar``` or, if you have Bash on your system, just run build.sh: ```bash build.sh```
+There are 3 ways to build Yakumo, depending on your system and its setup.
 
-### NixOS environment
+### System-agnostic (recommended)
+Open a terminal in the root of the project and type ```scalac src/*.scala src/*/*.scala -d yakumo.jar```
+
+### Using Bash
+If you have Bash on your system, run build.sh: ```bash build.sh```
+
+### NixOS
 If you are using NixOS, you can install my developer environment by running ```nix-shell``` on the root directory of the project.
+
+The nix environment lets you compile conveniently: ```nix-shell && $buildyakumo```.
+
