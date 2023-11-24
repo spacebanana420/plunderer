@@ -14,7 +14,6 @@ def server(port: Int = 42069) = {
   println(s"Opened server with port ${foreground("green")}$port${foreground("default")}\nWaiting for incoming requests...")
   writeLog(s"///Opened server with port $port///")
   val ss = ServerSocket(port)
-  //var closeServer = false
   while true do {
     try
       println("---Opening new connection---\n")

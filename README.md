@@ -57,5 +57,5 @@ If you have Bash on your system, run build.sh: ```bash build.sh```
 ### NixOS
 If you are using NixOS, you can install my developer environment by running ```nix-shell``` on the root directory of the project.
 
-The nix environment lets you compile conveniently: ```nix-shell && $buildyakumo```.
+The nix environment installs Scala, Git and lets you compile Yakumo conveniently: ```nix-shell && $buildyakumo```.
 

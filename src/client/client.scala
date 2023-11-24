@@ -40,11 +40,9 @@ def client(host: String = "localhost", port: Int = 42069) = {
     }
   else
     printStatus("Incorrect password! Connection was refused", true)
-  //sock.close()
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = { //add multi file support for upload too
-  //val howMany = readInt(is)
   sendMessage("getfiles", os)
   val filenames = receiveServerFileInfo(is)
   if filenames.length != 0 then
@@ -63,7 +61,6 @@ def clientDownload(is: InputStream, os: OutputStream) = { //add multi file suppo
       download(is, filenames(filenum), len, "./")
       println(s"Finished downloading ${filenames(filenum)}\n")
     }
-    //os.write(Array[Byte](0)) //wrap these god damn shits
     readUserInput("Press enter to continue")
   else
     printStatus("The server's storage is empty!\nThere's nothing to download", true)
