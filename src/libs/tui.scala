@@ -6,17 +6,15 @@ import scala.io.StdIn.readLine
 
 //ANSI escape codes, that's where the magic strings come from
 
-def readUserInput(message: String = ""): String = {
+def readUserInput(message: String = ""): String =
   if message != "" then
     println(message)
   readLine()
-}
 
-def readUserInputSpawn(message: String = ""): String = {
+def readUserInputSpawn(message: String = ""): String =
   if message != "" then
     print(s"\u001B[1J\u001B[H$message")
   readLine()
-}
 
 // def clear() = { //test windows support
 //   if File("C:").isDirectory == false then
@@ -25,9 +23,8 @@ def readUserInputSpawn(message: String = ""): String = {
 //     List[String]("cmd", "/c", "cls").!
 // }
 
-def spawnScreen(ui: String) = {
+def spawnScreen(ui: String) =
   print(s"\u001B[1J\u001B[H$ui")
-}
 
 // def clear() = print("\u001B[H\u001B[2J")
 
@@ -37,16 +34,15 @@ def saveScreen() = print("\u001B[?47h")
 
 def restoreScreen() = print("\u001B[?47l")
 
-def moveCursor(mode: String, lines: Int) = {
+def moveCursor(mode: String, lines: Int) =
   if mode == "up" then
     print(s"\u001B[${lines}A")
   else
     print(s"\u001B[${lines}B")
-}
 
 def clearBelowCursor(lines: Int) = print(s"\u001B[${lines}A\u001B[0K")
 
-def printStatus(msg: String, iserror: Boolean) = {
+def printStatus(msg: String, iserror: Boolean) =
   val default = foreground("default")
   if iserror == true then
     val red = foreground("red")
@@ -54,11 +50,9 @@ def printStatus(msg: String, iserror: Boolean) = {
   else
     val yellow = foreground("yellow")
     println(s"[${yellow}Warning$default] $msg")
-}
 
 
-def foreground(color: String = "default"): String = {
-  //val acceptedValues = List[String]("reset", "black", "")
+def foreground(color: String = "default"): String =
   color match
     case "black" => "\u001B[30m"
     case "red" => "\u001B[31m"
@@ -71,10 +65,8 @@ def foreground(color: String = "default"): String = {
     case "default" => "\u001B[39m"
     case "reset" => "\u001B[0m"
     case _ => "\u001B[39m"
-}
 
-def background(color: String = "default"): String = {
-  //val acceptedValues = List[String]("reset", "black", "")
+def background(color: String = "default"): String =
   color match
     case "black" => "\u001B[40m"
     case "red" => "\u001B[41m"
@@ -87,4 +79,3 @@ def background(color: String = "default"): String = {
     case "default" => "\u001B[49m"
     case "reset" => "\u001B[0m"
     case _ => "\u001B[49m"
-}

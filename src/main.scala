@@ -7,15 +7,14 @@ import java.io.File
 import java.io.FileOutputStream
 import scala.sys.exit
 
-@main def main() = {
+@main def main() =
   val cyan = foreground("cyan")
   val green = foreground("green")
   val default = foreground("default")
   if File("config.txt").isFile() == false then
     createConfig()
   val configOk = isConfigFine()
-  while true do {
-    //clear()
+  while true do
     val mode = readUserInputSpawn(s"$cyan[Yakumo v0.10]$default"
     + s"\n--Choose an option--\n${green}"
     + s"0:${default} Exit            ${green}"
@@ -24,10 +23,8 @@ import scala.sys.exit
     + s"3:${default} Show config     ${green}"
     + s"4:${default} Show log\n")
     userChoice(mode)
-  }
-}
 
-private def userChoice(mode: String) = {
+private def userChoice(mode: String) =
   if "01234".contains(mode) == true && mode != "" then
     mode match
       case "0" =>
@@ -50,9 +47,8 @@ private def userChoice(mode: String) = {
         showConfig()
       case "4" =>
         showLog()
-}
 
-private def showConfig() = {
+private def showConfig() =
   val isok = isConfigFine()
   val config = getConfigFile()
   val maxperfile = getFileLimit(config, "perfile")
@@ -70,9 +66,8 @@ private def showConfig() = {
       foreground("red")
 
   readUserInput(s"$title//Main settings//$default\n\nPassword enabled?: $usepass\nPassword: $password\nStorage location: $dir\n\n$title//File settings//$default\n\nFile size limit: $maxperfile GB\nStorage size limit: $maxtotal GB\n\nIs the config ok?: $okColor$isok$default\n\nPress enter to continue")
-}
 
-private def getPort(): Int = {
+private def getPort(): Int =
   val yellow = foreground("yellow")
   val default = foreground("default")
   val portstr = readUserInput(s"Type the port to use\nDefault: ${yellow}42069${default}\n")
@@ -81,25 +76,8 @@ private def getPort(): Int = {
   catch
     case e: Exception =>
       42069
-}
 
-// def getFile(): Array[String] = {
-//   val filepath = browse()
-//   val relative = getRelativePath(filepath)
-//   Array[String](relative, filepath)
-// }
-
-// def getDir(): String = {
-//   val default = File("").getAbsolutePath()
-//   val answer = readUserInput(s"Choose the server's storage directory\nDefault: $default")
-//   if File(answer).isDirectory() == false then
-//     println(s"The directory $answer does not exist! Using default directory")
-//     default
-//   else
-//     answer
-// }
-
-private def getIP(): String = {
+private def getIP(): String =
   val yellow = foreground("yellow")
   val default = foreground("default")
   val answer = readUserInput(s"Input the IP to connect to (default: ${yellow}localhost${default})")
@@ -107,4 +85,3 @@ private def getIP(): String = {
     answer
   else
     "localhost"
-}

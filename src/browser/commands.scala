@@ -24,11 +24,9 @@ def browserCommand(cmd: String, basedir: String): Boolean = {
       false
 }
 
-def cmd_search(basedir: String) = {
+def cmd_search(basedir: String) =
   val substr = readUserInput("Type the name to look for")
   browser_seek(basedir, substr)
-}
 
-def cmd_help() = {
+def cmd_help() =
   readUserInput("Available commands:\n   * search/find\n   * help\n\nPress enter to continue")
-}
