@@ -6,16 +6,6 @@ import scala.sys.process.*
 import scala.io.StdIn.readLine
 import scala.sys.exit
 
-// def separatePaths(paths: Array[String], mode: String, i: Int = 0, finalpaths: List[String] = List[String]()): List[String] = {
-//   if i < paths.length-1 then
-//     if (File(paths(i)).isFile == true && mode == "file") || (File(paths(i)).isFile == false && mode == "dir") then
-//       separatePaths(paths, mode, i+1, finalpaths :+ paths(i))
-//     else
-//       separatePaths(paths, mode, i+1, finalpaths)
-//   else
-//     finalpaths
-// }
-
 def getParentPath(path: String): String = {
   val parent = File(path).getParent()
   if parent != null then
@@ -33,7 +23,7 @@ def getRelativePath(fullpath: String): String = {
 def getPaths(path: String): Array[String] = {
   val files = File(path)
     .list()
-    .filter(x => File(s"$path/$x").isHidden == false)
+    .filter(x => File(s"$path/$x").isHidden() == false)
   if files.length > 15000 then
     files
   else
@@ -59,38 +49,3 @@ private def findLowest(paths: Array[String], i: Int, lowest: Int): Int = {
   else
     findLowest(paths, i+1, lowest)
 }
-
-
-//for reference
-// private def quickSort(strings: Array[String]): Unit = {
-//   def swap(i: Int, j: Int): Unit = {
-//     val temp = strings(i)
-//     strings(i) = strings(j)
-//     strings(j) = temp
-//   }
-//
-//   def partition(low: Int, high: Int): Int = {
-//     val pivot = strings(high)
-//     var i = low - 1
-//
-//     for (j <- low until high) {
-//       if (strings(j) < pivot) {
-//         i += 1
-//         swap(i, j)
-//       }
-//     }
-//
-//     swap(i + 1, high)
-//     i + 1
-//   }
-//
-//   def sort(low: Int, high: Int): Unit = {
-//     if (low < high) {
-//       val pivotIndex = partition(low, high)
-//       sort(low, pivotIndex - 1)
-//       sort(pivotIndex + 1, high)
-//     }
-//   }
-//
-//   sort(0, strings.length - 1)
-// }

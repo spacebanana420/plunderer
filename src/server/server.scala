@@ -1,6 +1,7 @@
 package yakumo.server
 import yakumo.*
 import yakumo.transfer.*
+import yakumo.config.*
 
 import java.net.ServerSocket
 import java.net.Socket

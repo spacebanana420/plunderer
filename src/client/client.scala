@@ -25,10 +25,12 @@ def client(host: String = "localhost", port: Int = 42069) = {
     val green = foreground("green")
     val default = foreground("default")
     println("Password is correct, connection accepted\n")
+
     var closeClient = false
     while closeClient == false do {
       clear()
       val mode = readUserInput(s"${green}IP:${default} $host   ${green}Port:${default} $port\n\n${green}0:${default} Exit   ${green}1:${default} Download   ${green}2:${default} Upload\nChoose a mode")
+
       if mode == "1" then
         clientDownload(is, os)
       else if mode == "2" then
@@ -40,6 +42,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
     }
   else
     printStatus("Incorrect password! Connection was refused", true)
+    readUserInput()
 }
 
 def clientDownload(is: InputStream, os: OutputStream) = { //add multi file support for upload too
@@ -67,22 +70,31 @@ def clientDownload(is: InputStream, os: OutputStream) = { //add multi file suppo
 }
 
 def clientUpload(is: InputStream, os: OutputStream) = {
-  val filepath = browse()
-  if filepath != "!cancelled!" then //implement something better maybe
-    val name = getRelativePath(filepath)
+  def sendfile(path: String) = {
+    val name = getRelativePath(path)
     val nameLen = name.length
-    val fileLen = File(filepath).length()
+    val fileLen = File(path).length()
 
     sendMessage("upload", os)
     sendInt(nameLen, os)
     sendString(name, os)
     sendLong(fileLen, os)
-
     if readStatusByte(is) == 1 then
       println(s"--Uploading File--\n  * Name: $name\n  * Length: $fileLen bytes")
-      upload(os, filepath)
+      upload(os, path)
       readUserInput(s"Finished uploading $name!\nPress enter to continue")
     else
-      printStatus("Connection refused\nFile exceeds the server's configured limit or filename is empty", true)
+      printStatus(s"Connection refused\nFile $name exceeds the server's configured limit or filename is empty", true)
+  }
+  val filepath = browse()
+  if filepath != "!cancelled!" then //implement something better maybe
+    if File(filepath).isFile() then
+      sendfile(filepath)
+    else
+      for i <- File(filepath).list() do
+        val fp = s"$filepath/$i"
+        if File(fp).isFile() && File(fp).isHidden() == false then
+          sendfile(s"$filepath/$i")
+
 }
 

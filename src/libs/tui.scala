@@ -2,19 +2,20 @@ package yakumo
 
 import java.io.File
 import scala.sys.process.*
+import scala.io.StdIn.readLine
 
 //ANSI escape codes, that's where the magic strings come from
 
 def readUserInput(message: String = ""): String = {
   if message != "" then
     println(message)
-  scala.io.StdIn.readLine()
+  readLine()
 }
 
 def readUserInputSpawn(message: String = ""): String = {
   if message != "" then
     print(s"\u001B[1J\u001B[H$message")
-  scala.io.StdIn.readLine()
+  readLine()
 }
 
 // def clear() = { //test windows support

@@ -1,51 +1,24 @@
-package yakumo
+package yakumo.config
+import yakumo.*
 
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
 
-def createConfig() = {
-  val defaultConfig = stringToBytes("password=test123\ndirectory=.\nmaxperfile=20\nmaxtotal=30")
-  val file = new FileOutputStream("config.txt")
-  file.write(defaultConfig)
-  file.close()
-}
+def passwordEnabled(config: List[String]): Boolean =
+  val passenabled = getSetting(config, "usepassword=")
+  val password = getSetting(config, "password=")
 
-def isConfigFine(): Boolean = {
-  val config = getConfigFile()
-  val password = getPassword(config)
-  val dir = getStorageDirectory(config)
-  val direxists = File(dir).isDirectory()
-  val perfile = getFileLimit(config, "perfile")
-  val total = getFileLimit(config, "total")
-
-  if password != "" && direxists == true && perfile != -1 && total != -1 then
-    true
-  else
+  if passenabled == "no" || passenabled == "false" || password == "" then
     false
-}
+  else
+    true
 
-
-def getConfigFile(): List[String] = {
-  val file = new FileInputStream("config.txt")
-  val bytes = new Array[Byte](file.available())
-  file.read(bytes)
-  file.close()
-
-  val config = configToStringList(bytes)
-  config
-}
-
-def getPassword(config: List[String]): String = {
-//   val passline = findLine(config, "password=")
-//   getLineSetting(passline)
+def getPassword(config: List[String]): String =
   getSetting(config, "password=")
-}
 
-def getStorageDirectory(config: List[String]): String = {
-//   val dirline = findLine(config, "directory=")
-//   val setting = getLineSetting(dirline)
+def getStorageDirectory(config: List[String]): String =
   val setting = getSetting(config, "directory=")
   if setting == "\"\"" || setting == "" then
     "./"
@@ -53,22 +26,30 @@ def getStorageDirectory(config: List[String]): String = {
      s"$setting/"
   else
     setting
-}
 
-def getFileLimit(config: List[String], mode: String): Int = {
+def getFileLimit(config: List[String], mode: String): Int =
   val settingName =
     mode match
       case "perfile" => "maxperfile="
       case "total" => "maxtotal="
-//   val settingLine = findLine(config, settingName)
-//   val strnum = getLineSetting(settingLine)
   val strnum = getSetting(config, settingName)
   try
     val num = strnum.toInt
     num
   catch
     case e: Exception => -1
-}
+
+def getPathLayout(config: List[String]): Int =
+  val amt = getSetting(config, "pathsperline=")
+  try
+    val amt_i = amt.toInt
+    if amt_i < 0 then
+      0
+    else
+      amt_i
+  catch
+    case e: Exception => 2
+
 //test this
 private def getSetting(config: List[String], seek: String): String = {
   def findLine(i: Int = 0): String = {
@@ -117,13 +98,3 @@ private def getSetting(config: List[String], seek: String): String = {
 //   else
 //     findLine(config, seekstr, i+1)
 // }
-
-private def configToStringList(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] = {
-  val chr = cfgBytes(i).toChar
-  if i == cfgBytes.length-1 then
-    cfgstr :+ line
-  else if chr == '\n' then
-    configToStringList(cfgBytes, "", cfgstr :+ line, i+1)
-  else
-    configToStringList(cfgBytes, line + chr, cfgstr, i+1)
-}
