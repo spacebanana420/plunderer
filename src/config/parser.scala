@@ -52,25 +52,24 @@ def getPathLayout(config: List[String]): Int =
 
 //test this
 private def getSetting(config: List[String], seek: String): String = {
-  def findLine(i: Int = 0): String = {
+  def findLine(i: Int = 0): String =
     if i >= config.length then
       ""
     else if config(i).contains(seek) == true then
       config(i)
     else
       findLine(i+1)
-  }
-  def getLineSetting(line: String): String = {
+
+  def getLineSetting(line: String): String =
     var copy = false
     var setting = ""
-    for chr <- line do {
+    for chr <- line do
       if copy == true then
         setting += chr
       else if chr == '=' then
         copy = true
-    }
     setting
-  }
+
   val settingline = findLine()
   if settingline != "" then
     getLineSetting(settingline)

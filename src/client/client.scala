@@ -51,9 +51,8 @@ def clientDownload(is: InputStream, os: OutputStream) = { //add multi file suppo
   if filenames.length != 0 then
     val filenums = chooseServerFile(filenames, is)
     var willdownload = ""
-    for file <- filenums do {
+    for file <- filenums do
       willdownload += s"  * ${filenames(file)}\n"
-    }
     println(s"The following files will be downloaded:\n$willdownload")
     for filenum <- filenums do {
       sendMessage("download", os)

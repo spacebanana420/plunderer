@@ -73,13 +73,11 @@ def serverSession(ss: ServerSocket) = {
     if inpass == password then
       val log = "Password is correct, proceeding"
       println(log); writeLog(log)
-      //os.write(Array[Byte](1))
       sendByte(1, os)
       server_listen()
     else
       val log = "Incorrect password received"
       printStatus(log, false); writeLog(log)
-      //os.write(Array[Byte](0))
       sendByte(0, os)
   sock.close()
 }
@@ -92,17 +90,16 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
   if isFileValid(fileLen, nameLen) == true then
     println(s"\n--Downloading File--\n  * Name: $name\n  * Length: $fileLen bytes\n")
     writeLog(s"///Downloading $name\nLength: $fileLen bytes///")
-    os.write(Array[Byte](1))
+    sendByte(1, os)
     download(is, name, fileLen, dir)
     println(s"Finished downloading $name!")
   else
     printStatus(s"Requested file transfer exceeds configured limit or file name is empty", true)
-    os.write(Array[Byte](0))
+    sendByte(0, os)
 }
 
 def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
-  //val files = sendServerFileInfo(os, dir)
-  val files = File(dir).list().filter(x => File(x).isFile == true)
+  val files = File(dir).list().filter(x => File(x).isFile())
   if files.length == 0 then
     printStatus("The server storage is empty, there is nothing to send to the client", false)
   else

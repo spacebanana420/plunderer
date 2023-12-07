@@ -12,7 +12,7 @@ def createConfig() =
   file.write(default)
   file.close()
 
-def isConfigFine(): Boolean = {
+def isConfigFine(): Boolean =
   val config = getConfigFile()
   val password = getPassword(config)
   val usepass = passwordEnabled(config)
@@ -25,7 +25,6 @@ def isConfigFine(): Boolean = {
     true
   else
     false
-}
 
 def getConfigFile(): List[String] = {
   def iscomment(line: String): Boolean =
@@ -33,7 +32,7 @@ def getConfigFile(): List[String] = {
       false
     else
       true
-  def convert(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] = {
+  def convert(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] =
     if i >= cfgBytes.length then
       cfgstr :+ line
     else
@@ -45,7 +44,7 @@ def getConfigFile(): List[String] = {
           convert(cfgBytes, "", cfgstr, i+1)
       else
         convert(cfgBytes, line + chr, cfgstr, i+1)
-  }
+
   val file = new FileInputStream("config.txt")
   val bytes = new Array[Byte](file.available())
   file.read(bytes)
