@@ -36,6 +36,7 @@ def serverSession(ss: ServerSocket) = {
   val is = sock.getInputStream()
   val os = sock.getOutputStream()
   val config = getConfigFile()
+  val usepass = passwordEnabled(config)
   val password = getPassword(config)
   val dir = getStorageDirectory(config)
 
@@ -56,25 +57,30 @@ def serverSession(ss: ServerSocket) = {
           println(log); writeLog(log)
           serverUpload(is, os, dir)
         case "delete" => //implement!!!
-//         case _ =>
-//           printStatus("Incorrect message sent!", true)
       server_listen()
   }
-  println("Connection established with client, waiting for password input")
+  println("Connection established with client")
 
-  while is.available() == 0 do {
-    Thread.sleep(250)
-  }
-  val inpass = readString(is.available(), is)
-  if inpass == password then
-    val log = "Password is correct, proceeding"
-    println(log); writeLog(log)
-    os.write(Array[Byte](1))
+  if usepass == false then
+    sendByte(1, os)
     server_listen()
   else
-    val log = "Incorrect password received"
-    printStatus(log, false); writeLog(log)
-    os.write(Array[Byte](0))
+    println("Password security is enabled, waiting for client to send the password")
+    sendByte(0, os)
+    while is.available() == 0 do
+      Thread.sleep(250)
+    val inpass = readString(is.available(), is)
+    if inpass == password then
+      val log = "Password is correct, proceeding"
+      println(log); writeLog(log)
+      //os.write(Array[Byte](1))
+      sendByte(1, os)
+      server_listen()
+    else
+      val log = "Incorrect password received"
+      printStatus(log, false); writeLog(log)
+      //os.write(Array[Byte](0))
+      sendByte(0, os)
   sock.close()
 }
 

@@ -6,12 +6,11 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 
 
-def createConfig() = {
-  val defaultConfig = stringToBytes("//Server settings//\nusepassword=yes\npassword=test123\ndirectory=.\nmaxperfile=20\nmaxtotal=30\n\n//Client Settings//\npathsperline=2")
+def createConfig() =
+  val default = stringToBytes("//Server settings//\nusepass=yes\npassword=test123\ndirectory=.\nmaxperfile=20\nmaxtotal=30\n\n//Client Settings//\npathsperline=2")
   val file = new FileOutputStream("config.txt")
-  file.write(defaultConfig)
+  file.write(default)
   file.close()
-}
 
 def isConfigFine(): Boolean = {
   val config = getConfigFile()
@@ -28,26 +27,30 @@ def isConfigFine(): Boolean = {
     false
 }
 
-
 def getConfigFile(): List[String] = {
+  def iscomment(line: String): Boolean =
+    if line.length > 0 && line(0) != '/' then
+      false
+    else
+      true
+  def convert(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] = {
+    if i >= cfgBytes.length then
+      cfgstr :+ line
+    else
+      val chr = cfgBytes(i).toChar
+      if chr == '\n' then
+        if iscomment(line) == false then
+          convert(cfgBytes, "", cfgstr :+ line, i+1)
+        else
+          convert(cfgBytes, "", cfgstr, i+1)
+      else
+        convert(cfgBytes, line + chr, cfgstr, i+1)
+  }
   val file = new FileInputStream("config.txt")
   val bytes = new Array[Byte](file.available())
   file.read(bytes)
   file.close()
 
-  val config = configToStringList(bytes)
+  val config = convert(bytes)
   config
-}
-
-private def configToStringList(cfgBytes: Array[Byte], line: String = "", cfgstr: List[String] = List[String](), i: Int = 0): List[String] = {
-  val chr = cfgBytes(i).toChar
-  if i == cfgBytes.length-1 then
-    cfgstr :+ line
-  else if chr == '\n' then
-    if line(0) != '/' then
-      configToStringList(cfgBytes, "", cfgstr :+ line, i+1)
-    else
-      configToStringList(cfgBytes, "", cfgstr, i+1)
-  else
-    configToStringList(cfgBytes, line + chr, cfgstr, i+1)
 }

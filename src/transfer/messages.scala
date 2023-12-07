@@ -19,6 +19,8 @@ def readBytes(len: Int, is: InputStream): Array[Byte] = {
 }
 
 //tested them, everything seems to be fine
+def readByte(is: InputStream): Short = readBytes(1, is)(0) //readstatusbyte does the same shit
+
 def readShort(is: InputStream): Short = bytesToShort(readBytes(2, is))
 
 def readInt(is: InputStream): Int = bytesToInt(readBytes(4, is))
@@ -26,6 +28,8 @@ def readInt(is: InputStream): Int = bytesToInt(readBytes(4, is))
 def readLong(is: InputStream): Long = bytesToLong(readBytes(8, is))
 
 def readString(len: Int, is: InputStream): String = bytesToString(readBytes(len, is))
+
+def sendByte(msg: Byte, os: OutputStream) = os.write(Array[Byte](msg))
 
 def sendShort(msg: Short, os: OutputStream) = os.write(shortToBytes(msg))
 

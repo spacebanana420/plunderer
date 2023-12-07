@@ -7,7 +7,7 @@ import java.io.FileOutputStream
 
 
 def passwordEnabled(config: List[String]): Boolean =
-  val passenabled = getSetting(config, "usepassword=")
+  val passenabled = getSetting(config, "usepass=")
   val password = getSetting(config, "password=")
 
   if passenabled == "no" || passenabled == "false" || password == "" then
