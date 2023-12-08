@@ -36,7 +36,6 @@ private def userChoice(mode: String) =
           printStatus("You need to have a properly configured config.txt file!\nCancelling server launch", true)
           exit()
       case "2" =>
-        // val file = getFile()
         val ip = getIP()
         val port = getPort()
         try

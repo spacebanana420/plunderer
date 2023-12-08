@@ -13,7 +13,7 @@ import java.io.File
 
 def server(port: Int = 42069) = {
   println(s"Opened server with port ${foreground("green")}$port${foreground("default")}\nWaiting for incoming requests...")
-  writeLog(s"///Opened server with port $port///")
+  writeLog(s"///Opened server with port $port///\n")
   val ss = ServerSocket(port)
   while true do {
     try
@@ -28,7 +28,7 @@ def server(port: Int = 42069) = {
         writeLog("Server crashed or connection was interrupted!")
   }
   ss.close()
-  writeLog(s"Server with port $port closed")
+  writeLog(s"///Server with port $port closed///\n")
 }
 
 def serverSession(ss: ServerSocket) = {

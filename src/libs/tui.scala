@@ -13,7 +13,7 @@ def readUserInput(message: String = ""): String =
 
 def readUserInputSpawn(message: String = ""): String =
   if message != "" then
-    print(s"\u001B[1J\u001B[H$message")
+    print(s"\u001B[3J\u001B[1J\u001B[H$message")
   readLine()
 
 // def clear() = { //test windows support
@@ -24,11 +24,11 @@ def readUserInputSpawn(message: String = ""): String =
 // }
 
 def spawnScreen(ui: String) =
-  print(s"\u001B[1J\u001B[H$ui")
+  print(s"\u001B[3J\u001B[1J\u001B[H$ui")
 
 // def clear() = print("\u001B[H\u001B[2J")
 
-def clear() = print("\u001B[1J\u001B[H")
+def clear() = print("\u001B[3J\u001B[1J\u001B[H")
 
 def saveScreen() = print("\u001B[?47h")
 

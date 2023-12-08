@@ -18,9 +18,9 @@ Although cross-platform support is very good, Yakumo is only officially tested f
 Grab the program from the [releases](https://github.com/spacebanana420/yakumo/releases)
 
 ## Requirements
-* Scala (recommended version 3.0 or above)
+* [Scala](https://scala-lang.org) (recommended version 3.0 or above)
 
-I am not distributing jars that include the whole Scala runtime, that's why Scala is specifically necessary.
+I am not distributing jars that include the whole Scala runtime, that's why Scala is specifically necessary rather than using Java directly.
 
 ## How to use
 Launch the jar program with ```scala yakumo.jar```. You will be prompted to choose if you want to open a server or connect to one using the built-in client.
@@ -30,10 +30,12 @@ The server requires a port, and defaults to ```42069```.
 
 If it doesn't exist, a config.txt file will be created where the program exists. This configuration file is necessary and contains the following options:
 
+* ```usepass```: Whether to use password security or not. Default is ```yes```
 * ```password```: The password for your server connections. Default is ```test123```, and you should change it to something secure of course.
 * ```directory```: The storage directory for the server. Default is ".", which corresponds to where yakumo.jar is.
 * ```maxperfile```: The maximum allowed file size per file, in gigabytes. The server will ignore files that are bigger than this.
 * ```maxtotal```: The maximum storage limit of the server, in gigabytes. The server will ignore all file uploads if it's full
+* ```pathsperline```: This setting is unused for now
 
 ### Client
 
@@ -57,5 +59,12 @@ If you have Bash on your system, run build.sh: ```bash build.sh```
 ### NixOS
 If you are using NixOS, you can install my developer environment by running ```nix-shell``` on the root directory of the project.
 
-The nix environment installs Scala, Git and lets you compile Yakumo conveniently: ```nix-shell && $buildyakumo```.
+To build Yakumo, paste the following command: ```nix-shell && $buildyakumo```.
+
+The nix environment installs Scala 3 and Git and lets you compile Yakumo conveniently.
+
+#### List of commands:
+* ```$yakumo```: Launches yakumo.jar in the current directory
+* ```$getyakumo``` Downloads the Github repository of Yakumo
+* ```$buildyakumo``` Builds yakumo in the current directory
 
