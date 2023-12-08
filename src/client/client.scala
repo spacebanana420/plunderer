@@ -65,7 +65,8 @@ def clientDownload(is: InputStream, os: OutputStream) = { //add multi file suppo
     }
     readUserInput("Press enter to continue")
   else
-    printStatus("The server's storage is empty!\nThere's nothing to download", true)
+    printStatus("The server's storage is empty!\nThere's nothing to download\n\nPress enter to continue", true)
+    readUserInput()
 }
 
 def clientUpload(is: InputStream, os: OutputStream) = {
@@ -81,7 +82,7 @@ def clientUpload(is: InputStream, os: OutputStream) = {
     if readStatusByte(is) == 1 then
       println(s"--Uploading File--\n  * Name: $name\n  * Length: $fileLen bytes")
       upload(os, path)
-      readUserInput(s"Finished uploading $name!\nPress enter to continue")
+      println(s"--Finished uploading $name!--\n")
     else
       printStatus(s"Connection refused\nFile $name exceeds the server's configured limit or filename is empty", true)
 
@@ -94,5 +95,6 @@ def clientUpload(is: InputStream, os: OutputStream) = {
         val fp = s"$filepath/$i"
         if File(fp).isFile() && File(fp).isHidden() == false then
           sendfile(s"$filepath/$i")
+    readUserInput("Press enter to continue")
 }
 

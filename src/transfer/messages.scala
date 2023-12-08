@@ -50,6 +50,7 @@ def sendMessage(message: String, os: OutputStream) = {
       case "upload" => Array[Byte](4)
       case "download" => Array[Byte](5)
       case "delete" => Array[Byte](6) //implement!!!
+      case "updir" => Array[Byte](7) //implement too!!!
       case _ =>
         printStatus("Incorrect message sent!", true)
         Array[Byte](-1)
@@ -67,6 +68,7 @@ def receiveMessage(is: InputStream): String = {
     case 4 => "upload"
     case 5 => "download"
     case 6 => "delete" //implement!!!
+    case 7 => "updir" //implement too!!!
     case _ =>
       printStatus("Incorrect message received!", true)
       "error"

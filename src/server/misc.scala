@@ -6,9 +6,10 @@ import yakumo.config.*
 import java.io.File
 import java.io.OutputStream
 
+def getServerFiles(dir: String) = File(dir).list().filter(x => File(s"$dir$x").isFile())
 
 def sendServerFileInfo(os: OutputStream, dir: String) =
-  val files = File(dir).list().filter(x => File(x).isFile == true)
+  val files = getServerFiles(dir)
   sendInt(files.length, os)
   for file <- files do
     sendInt(file.length, os)

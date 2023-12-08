@@ -11,6 +11,9 @@ import java.io.File
 
 //This file includes the code exclusive to the server
 
+private def getClientIP(sock: Socket): String =
+  sock.getRemoteSocketAddress().toString()
+
 def server(port: Int = 42069) = {
   println(s"Opened server with port ${foreground("green")}$port${foreground("default")}\nWaiting for incoming requests...")
   writeLog(s"///Opened server with port $port///\n")
@@ -21,7 +24,6 @@ def server(port: Int = 42069) = {
       writeLog("Server is awating connection")
       serverSession(ss)
       println("Closing connection")
-      writeLog("Server closed connection")
     catch
       case e: Exception =>
         printStatus("The server has crashed or the client disconnected unexpectedly!", true)
@@ -33,8 +35,13 @@ def server(port: Int = 42069) = {
 
 def serverSession(ss: ServerSocket) = {
   val sock = ss.accept()
+  val ip = getClientIP(sock)
   val is = sock.getInputStream()
   val os = sock.getOutputStream()
+
+  val clog = s"Client of IP ${foreground("green")}$ip${foreground("default")} connected to the server"
+  println(clog); writeLog(clog)
+
   val config = getConfigFile()
   val usepass = passwordEnabled(config)
   val password = getPassword(config)
@@ -65,10 +72,10 @@ def serverSession(ss: ServerSocket) = {
     sendByte(1, os)
     server_listen()
   else
-    println("Password security is enabled, waiting for client to send the password")
+    println("Waiting for client to send the password")
     sendByte(0, os)
     while is.available() == 0 do
-      Thread.sleep(250)
+      Thread.sleep(250) //add a timeout
     val inpass = readString(is.available(), is)
     if inpass == password then
       val log = "Password is correct, proceeding"
@@ -99,12 +106,12 @@ def serverDownload(is: InputStream, os: OutputStream, dir: String) = {
 }
 
 def serverUpload(is: InputStream, os: OutputStream, dir: String) = {
-  val files = File(dir).list().filter(x => File(x).isFile())
+  val files = getServerFiles(dir)
   if files.length == 0 then
     printStatus("The server storage is empty, there is nothing to send to the client", false)
   else
     val chosen = readInt(is)
-    val len = File(files(chosen)).length() //can crash the connection!
+    val len = File(s"$dir${files(chosen)}").length() //can crash the connection!
     sendLong(len, os)
 
     println(s"\n--Uploading File--\n  * Name: ${files(chosen)}\n  * Length: $len bytes")

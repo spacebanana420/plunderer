@@ -12,8 +12,6 @@ def receiveServerFileInfo(is: InputStream, howMany: Int = 0, i: Int = -1, filena
   else if i >= howMany then
     filenames
   else
-    //val len = bytesToInt(readBytes(4, is))
-    //val name = bytesToString(readBytes(len, is))
     val len = readInt(is)
     val name = readString(len, is)
     receiveServerFileInfo(is, howMany, i+1, filenames :+ name)
@@ -40,6 +38,12 @@ def chooseServerFile(files: List[String], is: InputStream): List[Int] = { //what
       catch
         case e: Exception => linesToNumbers(strlines, maxval, filenums, i+1)
 
+  def getAllFiles(files: List[String], n: List[Int] = List(), i: Int = 0): List[Int] =
+    if i >= files.length then
+      n
+    else
+      getAllFiles(files, n :+ i, i+1)
+
   val green = foreground("green")
   val default = foreground("default")
   var i = 0
@@ -54,8 +58,12 @@ def chooseServerFile(files: List[String], is: InputStream): List[Int] = { //what
       filesInLine = 0
     i += 1
 
-  screen ++= "Choose the server file(s) to download\nTo download multiple files, type each number and separate then by a space"
+  screen ++= "\nChoose the server file(s) to download\nTo download multiple files, type each number and separate then by a space\nTo download the whole directory, press enter with an empty input"
   val choice = readUserInput(screen)
-  val filenums = linesToNumbers(separateStringLines(choice), files.length-1)
+  val filenums =
+    if choice != "" then
+      linesToNumbers(separateStringLines(choice), files.length-1) //optimize this later maybe
+    else
+      getAllFiles(files) //test!!!!!!!
   filenums
 }
