@@ -76,24 +76,3 @@ private def getSetting(config: List[String], seek: String): String = {
   else
     ""
 }
-
-// private def getLineSetting(line: String): String = {
-//   var copy = false
-//   var setting = ""
-//   for chr <- line do {
-//     if copy == true then
-//       setting += chr
-//     else if chr == '=' then
-//       copy = true
-//   }
-//   setting
-// }
-//
-// private def findLine(config: List[String], seekstr: String, i: Int = 0): String = {
-//   if config(i).contains(seekstr) == true then
-//     config(i)
-//   else if i == config.length-1 then
-//     ""
-//   else
-//     findLine(config, seekstr, i+1)
-// }

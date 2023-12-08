@@ -7,10 +7,16 @@ import java.io.FileOutputStream
 
 
 def createConfig() =
-  val default = stringToBytes("//Server settings//\nusepass=yes\npassword=test123\ndirectory=.\nmaxperfile=20\nmaxtotal=30\n\n//Client Settings//\npathsperline=2")
-  val file = new FileOutputStream("config.txt")
-  file.write(default)
-  file.close()
+  if File("config.txt").isFile() == false then
+    val default = stringToBytes(
+    "//Server settings//"
+    +"\nusepass=yes\npassword=test123\n# If the password is empty, password configuration will be ignored\n"
+    +"\ndirectory=.\nmaxperfile=20\nmaxtotal=30\n# The directory setting sets the storage path for your server\n # The file size limit is measured in GB\n\n"
+    + "//Client Settings//\npathsperline=2\n# The setting pathsperline is not used yet"
+    )
+    val file = new FileOutputStream("config.txt")
+    file.write(default)
+    file.close()
 
 def isConfigFine(): Boolean =
   val config = getConfigFile()
@@ -28,7 +34,7 @@ def isConfigFine(): Boolean =
 
 def getConfigFile(): List[String] = {
   def iscomment(line: String): Boolean =
-    if line.length > 0 && line(0) != '/' then
+    if line.length > 0 && line(0) != '/' && line(0) != '#' then
       false
     else
       true

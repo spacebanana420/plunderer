@@ -3,7 +3,7 @@ import yakumo.*
 
 import java.io.File
 
-def browserCommand(cmd: String, basedir: String): Boolean = {
+def browserCommand(cmd: String, basedir: String): Boolean =
   val cmds = List("search", "find", "help")
   def findCommand(i: Int = 0): String =
     if i >= cmds.length then
@@ -22,7 +22,6 @@ def browserCommand(cmd: String, basedir: String): Boolean = {
       true
     case _ =>
       false
-}
 
 def cmd_search(basedir: String) =
   val substr = readUserInput("Type the name to look for")

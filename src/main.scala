@@ -11,8 +11,8 @@ import scala.sys.exit
   val cyan = foreground("cyan")
   val green = foreground("green")
   val default = foreground("default")
-  if File("config.txt").isFile() == false then
-    createConfig()
+
+  createConfig()
   val configOk = isConfigFine()
   while true do
     val mode = readUserInputSpawn(s"$cyan[Yakumo v0.10]$default"

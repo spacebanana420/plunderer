@@ -20,7 +20,7 @@ def browse(): String = {
       -1
 
   def browseLoop(basedir: String): String =
-    val paths = fileBrowser(basedir)
+    val paths = browsedir(basedir)
     val answer = readLine()
     if browserCommand(answer, basedir) == true then
       browseLoop(basedir)
@@ -56,7 +56,7 @@ def shortenName(n: String, limit: Int, n2: String = "", i: Int = 0): String =
   else
     shortenName(n, limit, n2 + n(i), i+1)
 
-def fileBrowser(basedir: String): Array[String] = { //test
+def browsedir(basedir: String): Array[String] = { //test
   val green = foreground("green")
   val red = foreground("red")
   val default = foreground("default")

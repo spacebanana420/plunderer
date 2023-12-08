@@ -84,6 +84,7 @@ def clientUpload(is: InputStream, os: OutputStream) = {
       readUserInput(s"Finished uploading $name!\nPress enter to continue")
     else
       printStatus(s"Connection refused\nFile $name exceeds the server's configured limit or filename is empty", true)
+
   val filepath = browse()
   if filepath != "!cancelled!" then //implement something better maybe
     if File(filepath).isFile() then
@@ -93,6 +94,5 @@ def clientUpload(is: InputStream, os: OutputStream) = {
         val fp = s"$filepath/$i"
         if File(fp).isFile() && File(fp).isHidden() == false then
           sendfile(s"$filepath/$i")
-
 }
 
