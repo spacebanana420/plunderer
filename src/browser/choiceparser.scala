@@ -1,6 +1,8 @@
 package yakumo.browser
 import yakumo.*
 
+//This code is not implemented yet, but it will make the client able to upload multiple handpicked files
+
 def parseChoices(answer: String, dirqtd: Int): List[Int] = {
   def append(s: String, l: List[Int]): List[Int] =
     try
