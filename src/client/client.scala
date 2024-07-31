@@ -33,6 +33,7 @@ def client(host: String = "localhost", port: Int = 42069) = {
       sendMessage("close", os)
       println("Closing connection with server")
 
+
   if readStatusByte(is) == 1 then
     session()
   else

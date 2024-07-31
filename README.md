@@ -19,8 +19,8 @@ Grab the program from the [releases](https://github.com/spacebanana420/yakumo/re
 
 ## Requirements
 * [Scala](https://scala-lang.org) (recommended version 3.0 or above)
-
-I am not distributing jars that include the whole Scala runtime, that's why Scala is specifically necessary rather than using Java directly.
+or
+* Java 11 or higher
 
 ## How to use
 Launch the jar program with ```scala yakumo.jar```. You will be prompted to choose if you want to open a server or connect to one using the built-in client.
@@ -50,8 +50,11 @@ You require [Scala 3.0](https://scala-lang.org) or higher to build Yakumo
 
 There are 3 ways to build Yakumo, depending on your system and its setup.
 
-### System-agnostic (recommended)
-Open a terminal in the root of the project and type ```scalac src/*.scala src/*/*.scala -d yakumo.jar```
+### Scalac
+Open a terminal in the root of the project and type `scalac src/*.scala src/*/*.scala -d yakumo.jar`
+
+### Scala-CLI (recommended)
+Open a terminal in the root of the project and type `scala-cli --power package src --assembly --preamble=false -f -o build/yakumo.jar`
 
 ### Using Bash
 If you have Bash on your system, run build.sh: ```bash build.sh```

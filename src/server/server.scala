@@ -11,8 +11,7 @@ import java.io.File
 
 //This file includes the code exclusive to the server
 
-private def getClientIP(sock: Socket): String =
-  sock.getRemoteSocketAddress().toString()
+private def getClientIP(sock: Socket): String = sock.getRemoteSocketAddress().toString()
 
 def server(port: Int = 42069) = {
   println(s"Opened server with port ${foreground("green")}$port${foreground("default")}\nWaiting for incoming requests...")
